@@ -283,6 +283,10 @@ html.oscuro .ll-ico{color:#F0A9BB}
 .precio .consultar{font-weight:600;color:var(--burdeos);font-size:13px}
 html.oscuro .precio .consultar{color:#F0A9BB}
 .pin.punto{width:14px;height:14px;padding:0;border-radius:50%}
+.pin.sv{background:#A58E95;border-style:dashed}
+.sv-chip{display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:999px;font-size:11.5px;font-weight:700;letter-spacing:.01em;color:#7A5A64;background:#F1E9EC;border:1px dashed #C9AEB7}
+html.oscuro .sv-chip{color:#E3C3CD;background:#3A2C31;border-color:#6E5560}
+.nota.sv{background:transparent;border:1.5px dashed var(--linea, #E7E1DC);margin-top:14px}
 .enlace{color:var(--burdeos);text-decoration:underline;text-underline-offset:2px}
 html.oscuro .enlace{color:#F0A9BB}
 button.ubic{cursor:pointer;font:inherit}
@@ -429,6 +433,7 @@ function calcularDistancias(){ MOTELES.forEach(m=>{ m.km = dist(YO,m); m.min = M
 // Contacto de los dueños: WhatsApp de Orbe (decisión de José, 14/11/2026). El panel duenos.html queda para cuando haya base.
 const ORBE_WA = '595982702613';
 const ORBE_WA_SUMARSE = 'https://wa.me/595982702613?text=Hola%2C%20tengo%20un%20motel%20y%20quiero%20sumarlo%20a%20Motel%20Cerca%20%28fotos%2C%20precios%20y%20WhatsApp%29.%20El%20motel%20se%20llama%3A%20';
+const orbeWaAviso = m => `https://wa.me/${ORBE_WA}?text=${encodeURIComponent(`Hola, vi en Motel Cerca el motel ${m.nombre} (${m.zona}). Les cuento si sigue abierto: `)}`;
 const orbeWaFicha = m => `https://wa.me/${ORBE_WA}?text=${encodeURIComponent(`Hola, soy de ${m.nombre} (${m.zona}) y quiero completar nuestra ficha en Motel Cerca: fotos, precios y WhatsApp.`)}`;
 const CFG = window.MC_CONFIG || {};
 const sb = (CFG.supabaseUrl && CFG.supabaseKey && window.supabase) ? window.supabase.createClient(CFG.supabaseUrl, CFG.supabaseKey, {auth:{persistSession:true, storageKey:'mc-sesion'}}) : null;
@@ -508,7 +513,7 @@ function tarjeta(m){
     <div class="info">
       <h3>${esc(m.nombre)}</h3>
       ${ubicado?`<div class="meta"><span>${m.km.toFixed(1).replace('.',',')} km · ${m.min} min</span></div>`:''}
-      <div class="meta">${esc(m.zona)}</div>
+      <div class="meta">${esc(m.zona)}${m.verificado===false?' <span class="sv-chip">Sin verificar</span>':''}</div>
       ${m.comod.length ? `<div class="iconitos" title="${m.comod.map(c=>COMOD[c][0]).join(', ')}">${m.comod.filter(c=>c!=='wifi'&&c!=='tv').slice(0,4).map(c=>ico(COMOD[c][1])).join('')}</div>` : ''}
       <div class="precio">${m.desde ? `<small>${m.desdeTxt}</small><b>${gs(m.desde)}</b>` : `<small class="consultar">${m.wa||m.tel ? 'Consultá los precios' : 'Precios sin cargar'}</small>`}</div>
     </div></a>`;
@@ -569,7 +574,7 @@ function iniciarMapa(){
 function pintarPines(l){
   Object.values(capas).forEach(c=>c.remove()); capas={};
   l.forEach(m=>{
-    const mk = L.marker([m.lat,m.lng],{icon:L.divIcon({html: m.desde ? `<span class="pin">${mil(m.desde)}</span>` : `<span class="pin punto" title="${esc(m.nombre)}"></span>`,iconSize:[0,0],className:''})}).addTo(mapa);
+    const mk = L.marker([m.lat,m.lng],{icon:L.divIcon({html: m.desde ? `<span class="pin">${mil(m.desde)}</span>` : `<span class="pin punto${m.verificado===false?' sv':''}" title="${esc(m.nombre)}${m.verificado===false?' (sin verificar)':''}"></span>`,iconSize:[0,0],className:''})}).addTo(mapa);
     mk.on('click',()=>{location.hash='#/motel/'+m.id;});
     mk.on('mouseover',()=>marcar(m.id,true)); mk.on('mouseout',()=>marcar(m.id,false));
     capas[m.id]=mk;
@@ -598,6 +603,7 @@ function vistaMotel(id){
         <h1>${esc(m.nombre)}</h1>
         <div class="meta"><span>${esc(m.zona)}</span></div>
         <div class="meta" style="margin-top:4px">${esc(m.dir)}${ubicado?` · ${m.km.toFixed(1).replace('.',',')} km (${m.min} min)`:''}</div>
+        ${m.verificado===false ? `<div class="nota sv">${ico('i-ayuda')}<div><b>Sin verificar.</b> Lo encontramos en mapas o directorios, pero no pudimos confirmar que siga abierto${m.aprox?' y la ubicación es aproximada':''}. ¿Lo conocés? <a class="enlace" href="${orbeWaAviso(m)}" target="_blank" rel="noopener">Avisanos por WhatsApp</a>.</div></div>` : ''}
         <div class="acciones tres">
           <a class="acc" href="#" data-llegar>${ico('i-ruta')}Cómo llegar</a>
           ${m.tel ? `<a class="acc contacto tel" href="tel:${telLink(m.tel)}">${ico('i-tel')}Llamar</a>` : `<span class="acc contacto apagado" aria-disabled="true" title="Este motel no cargó un teléfono">${ico('i-tel')}Llamar</span>`}
