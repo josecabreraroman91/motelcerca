@@ -279,6 +279,8 @@ html.oscuro .ll-ico{color:#F0A9BB}
 .sin-foto img{width:38%;max-width:90px;opacity:.35}
 .sin-foto.grande{aspect-ratio:16/9;max-height:300px}
 .sin-foto.grande img{width:84px}
+.ver-fotos{display:inline-flex;align-items:center;gap:8px;height:42px;padding:0 16px;border-radius:12px;background:#fff;color:#5a1d2d;font-weight:700;font-size:14px;text-decoration:none;box-shadow:0 6px 18px rgba(0,0,0,.25)}
+.ver-fotos svg{width:18px;height:18px}
 .nuevo{font-size:12px;font-weight:700;color:var(--texto-2);background:var(--fondo);border:1px solid var(--linea);padding:2px 8px;border-radius:999px}
 .precio .consultar{font-weight:600;color:var(--burdeos);font-size:13px}
 html.oscuro .precio .consultar{color:#F0A9BB}
@@ -351,6 +353,7 @@ if(osc)document.documentElement.classList.add('oscuro');})();
   <symbol id="i-tv" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="12" rx="2"/><path d="M8 21h8"/></symbol>
   <symbol id="i-volver" viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></symbol>
   <symbol id="i-ruta" viewBox="0 0 24 24"><path d="m3 11 18-8-8 18-2-8z"/></symbol>
+  <symbol id="i-foto" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="14" rx="3"/><path d="M8.5 6 10 3.5h4L15.5 6"/><circle cx="12" cy="13" r="3.5"/></symbol>
   <symbol id="i-wa" viewBox="0 0 24 24"><path d="M4 20l1.3-3.9A8 8 0 1 1 8 19z"/><path d="M9 9.5c.3 2 2.5 4.3 4.6 4.8l1.2-1.3 1.8.8c-.3 1.2-1.3 1.9-2.5 1.7C11 15 8.6 12.6 8.2 10c-.2-1.2.5-2.2 1.7-2.5l.8 1.8z"/></symbol>
   <symbol id="i-escudo" viewBox="0 0 24 24"><path d="M12 3 5 6v5c0 4.5 3 8.4 7 10 4-1.6 7-5.5 7-10V6z"/><path d="m9 12 2 2 4-4"/></symbol>
   <symbol id="i-mapa" viewBox="0 0 24 24"><path d="m9 4-6 2.5v13.5l6-2.5 6 2.5 6-2.5V4l-6 2.5z"/><path d="M9 4v13.5M15 6.5V20"/></symbol>
@@ -500,7 +503,10 @@ let favs = new Set(guardado('favs') || []);
 const filtros = {comod:new Set(), max:600000, maxTocado:false, orden:'cerca'};
 
 function foto(n, alt){return `<img src="${esc(n)}" alt="${esc(alt)}" loading="lazy" onerror="this.remove()">`;}
-function sinFoto(m, grande){ return `<div class="sin-foto ${grande?'grande':''}"><img src="marca/monograma-blanco.svg" alt="">${grande?'<span>Este motel todavía no subió fotos</span>':''}</div>`; }
+function sinFoto(m, grande){
+  // Las fotos son de cada motel: no se copian; se enlaza a sus redes hasta que nos las manden (decisión 14/11)
+  const red = m.instagram ? ['Instagram', m.instagram] : m.facebook ? ['Facebook', m.facebook] : null;
+  return `<div class="sin-foto ${grande?'grande':''}"><img src="marca/monograma-blanco.svg" alt="">${grande ? (red ? `<a class="ver-fotos" href="${esc(red[1])}" target="_blank" rel="noopener">${ico('i-foto')}Ver fotos en su ${red[0]}</a>` : '<span>Este motel todavía no subió fotos</span>') : ''}</div>`; }
 function toggleFav(id){ favs.has(id)?favs.delete(id):favs.add(id); guardado('favs',[...favs]);
   if(location.hash.startsWith('#/favoritos')) return render();
   document.querySelectorAll(`[data-fav="${CSS.escape(id)}"]`).forEach(b=>{ b.classList.toggle('on', favs.has(id)); b.setAttribute('aria-pressed', favs.has(id)); }); }
