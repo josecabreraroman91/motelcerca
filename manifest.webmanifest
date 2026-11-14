@@ -1,0 +1,16 @@
+{
+  "name": "Motel Cerca",
+  "short_name": "Motel Cerca",
+  "description": "Moteles cerca de vos en Gran Asunción: cómo llegar, contacto y precios.",
+  "lang": "es",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#F7F3F0",
+  "theme_color": "#842D43",
+  "icons": [
+    {"src": "marca/iconos-app/web-icon-192.png", "sizes": "192x192", "type": "image/png"},
+    {"src": "marca/iconos-app/web-icon-512.png", "sizes": "512x512", "type": "image/png"},
+    {"src": "marca/iconos-app/icon-only.png", "sizes": "1024x1024", "type": "image/png", "purpose": "maskable"}
+  ]
+}

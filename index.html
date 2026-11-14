@@ -1,0 +1,865 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#842D43">
+<!-- MOTEL CERCA · © 2026 José Cabrera (orbepy). Todos los derechos reservados. Software propietario: prohibida su copia, modificación, distribución o uso para productos similares sin autorización escrita del titular (Ley 1328/98 de Derecho de Autor). Huella de autoría: MC-B99959955768 -->
+<title>Motel Cerca</title>
+<meta name="author" content="MOTEL CERCA · orbepy">
+<meta name="copyright" content="© 2026 José Cabrera · MOTEL CERCA. Todos los derechos reservados.">
+<meta name="mc-firma" content="MC-B99959955768">
+<meta name="description" content="Moteles cerca de vos en Gran Asunción: ubicación, cómo llegar, contacto y precios.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="marca/iconos-app/apple-touch-icon-180.png">
+<link rel="canonical" href="https://motelcerca.orbepy.com/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Motel Cerca · moteles cerca de vos">
+<meta property="og:description" content="Encontrá el motel más cercano en Gran Asunción, mirá cómo llegar y escribile directo.">
+<meta property="og:url" content="https://motelcerca.orbepy.com/">
+<meta property="og:image" content="https://motelcerca.orbepy.com/marca/iconos-app/play-store-512.png">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="marca/iconos-app/favicon-32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+<style>
+:root{
+  --mc-firma:"MC-B99959955768";
+  --burdeos:#842D43; --burdeos-2:#6E2337; --burdeos-claro:#F4E6EA;
+  --fondo:#F7F3F0; --superficie:#FFFFFF; --linea:#E7E1DC; --texto:#2B2528; --texto-2:#6F6569;
+  --verde:#1F8A5B; --ambar:#C98A1B;
+  --sombra:0 1px 2px rgba(43,37,40,.06),0 8px 24px rgba(43,37,40,.08);
+  --radio:18px; --t:"Outfit",system-ui,sans-serif; --b:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+html.oscuro{
+  --fondo:#171214; --superficie:#221B1E; --linea:#3A2F33; --texto:#F3ECEE; --texto-2:#B5A8AD;
+  --burdeos-claro:#3A1C25; --sombra:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{font-family:var(--b);background:var(--fondo);color:var(--texto);-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;padding:0}
+a{color:inherit;text-decoration:none}
+svg.i{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+h1,h2,h3,.num{font-family:var(--t);letter-spacing:-.01em}
+
+/* ---------- estructura ---------- */
+.app{display:grid;grid-template-columns:1fr;min-height:100%}
+.side{display:none}
+main{min-width:0;padding-bottom:84px}
+.top{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:calc(env(safe-area-inset-top) + 12px) 16px 12px;background:color-mix(in srgb,var(--fondo) 88%,transparent);backdrop-filter:blur(12px)}
+.top img{height:30px;display:block}
+.top .logo-oscuro{display:none}
+html.oscuro .top .logo-claro{display:none}html.oscuro .top .logo-oscuro{display:block}
+.btn-icono{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;background:var(--superficie);box-shadow:var(--sombra)}
+.bottom{position:fixed;left:0;right:0;bottom:0;z-index:30;display:grid;grid-template-columns:repeat(3,1fr);
+  background:var(--superficie);border-top:1px solid var(--linea);padding:8px 8px calc(env(safe-area-inset-bottom) + 8px)}
+.bottom a{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11.5px;font-weight:600;color:var(--texto-2);padding:6px 0;border-radius:12px}
+.bottom a.on{color:var(--burdeos)}
+html.oscuro .bottom a.on{color:#E78AA2}
+
+@media (min-width:960px){
+  .app{grid-template-columns:248px 1fr;height:100vh}
+  main{padding-bottom:0;overflow:auto;height:100vh}
+  .bottom{display:none}
+  .top .logo-mov{display:none}
+  .side{display:flex;flex-direction:column;gap:6px;padding:24px 16px;background:var(--burdeos);color:#fff;position:relative;overflow:hidden}
+  .side::after{content:"";position:absolute;right:-90px;bottom:-60px;width:300px;height:300px;opacity:.07;
+    background:url(marca/monograma-blanco.svg) center/contain no-repeat;pointer-events:none}
+  .side .marca{padding:4px 8px 22px}
+  .side .marca img{height:30px;display:block}
+  .side a{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:12px;font-weight:600;font-size:14.5px;color:rgba(255,255,255,.78)}
+  .side a:hover{background:rgba(255,255,255,.08);color:#fff}
+  .side a.on{background:rgba(255,255,255,.14);color:#fff}
+  .side .pie{margin-top:auto;padding:12px;font-size:12px;color:rgba(255,255,255,.6)}
+  .side .duenos{margin:12px 4px 8px;padding:14px;border-radius:14px;background:rgba(0,0,0,.18);font-size:13px;line-height:1.4;color:rgba(255,255,255,.85)}
+  .side .duenos b{display:block;font-family:var(--t);font-size:15px;color:#fff;margin-bottom:4px}
+}
+
+/* ---------- explorar ---------- */
+.explorar{display:block}
+.lista{padding:4px 16px 24px}
+.hola h1{font-size:30px;line-height:1.05;margin:8px 0 6px;font-weight:700}
+.hola h1 em{font-style:normal;color:var(--burdeos)}
+html.oscuro .hola h1 em{color:#E78AA2}
+.hola p{margin:0 0 16px;color:var(--texto-2);font-size:15px}
+.ubic{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--texto-2);background:var(--superficie);border:1px solid var(--linea);padding:6px 10px;border-radius:999px}
+.ubic svg{width:15px;height:15px;color:var(--burdeos)}
+.buscador{display:flex;align-items:center;gap:10px;background:var(--superficie);border:1px solid var(--linea);border-radius:16px;padding:0 6px 0 14px;height:52px;margin:14px 0 12px;box-shadow:var(--sombra)}
+.buscador input{flex:1;border:0;outline:0;background:none;font:inherit;font-size:15px;color:var(--texto);min-width:0}
+.buscador .btn-filtro{height:40px;padding:0 12px;border-radius:12px;background:var(--burdeos);color:#fff;display:flex;align-items:center;gap:6px;font-weight:600;font-size:13.5px}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:2px 0 14px;scrollbar-width:none;margin:0 -16px;padding-left:16px;padding-right:16px}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 13px;border-radius:999px;border:1px solid var(--linea);background:var(--superficie);font-size:13.5px;font-weight:600;color:var(--texto);transition:.15s}
+.chip svg{width:16px;height:16px}
+.chip.on{background:var(--burdeos);border-color:var(--burdeos);color:#fff}
+.sec{display:flex;align-items:baseline;justify-content:space-between;margin:10px 0 12px}
+.sec h2{font-size:19px;margin:0;font-weight:700}
+.sec span{font-size:13px;color:var(--texto-2)}
+.tarjetas{display:grid;gap:14px}
+.card{display:grid;grid-template-columns:118px 1fr;gap:12px;background:var(--superficie);border-radius:var(--radio);padding:10px;box-shadow:var(--sombra);transition:transform .18s ease, box-shadow .18s}
+.card:hover{transform:translateY(-2px)}
+@media (hover:hover) and (min-width:960px){.card.on{outline:2px solid var(--burdeos)}}
+.foto{position:relative;border-radius:13px;overflow:hidden;background:linear-gradient(135deg,#5b2232,#2a1418);aspect-ratio:1/1}
+.foto img{width:100%;height:100%;object-fit:cover;display:block}
+.foto .fav{position:absolute;top:6px;right:6px;width:30px;height:30px;border-radius:10px;display:grid;place-items:center;background:rgba(255,255,255,.92);color:var(--burdeos)}
+.foto .fav svg{width:16px;height:16px}
+.foto .fav.on svg{fill:var(--burdeos)}
+.info{min-width:0;display:flex;flex-direction:column;padding:2px 2px 2px 0}
+.info h3{margin:0 0 3px;font-size:16.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.meta{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--texto-2);flex-wrap:wrap}
+.meta .estrella{display:inline-flex;align-items:center;gap:3px;color:var(--texto);font-weight:700}
+.meta .estrella svg{width:13px;height:13px;fill:var(--ambar);stroke:var(--ambar)}
+.estado{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;margin-top:6px}
+.estado::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.precio{margin-top:auto;display:flex;align-items:baseline;gap:6px;padding-top:8px}
+.precio small{font-size:12px;color:var(--texto-2)}
+.precio b{font-family:var(--t);font-size:18px;font-weight:700}
+.iconitos{display:flex;gap:6px;margin-top:6px;color:var(--texto-2)}
+.iconitos svg{width:16px;height:16px}
+.aviso-demo{margin:18px 0 0;font-size:12px;color:var(--texto-2);text-align:center}
+
+.mapa-wrap{display:none}
+.ver-mapa{position:fixed;left:50%;transform:translateX(-50%);bottom:96px;z-index:25;display:flex;align-items:center;gap:8px;height:46px;padding:0 18px;border-radius:999px;background:var(--texto);color:var(--fondo);font-weight:700;font-size:14px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.explorar.con-mapa .mapa-wrap{display:block;position:fixed;inset:0 0 72px 0;z-index:22}
+.explorar.con-mapa .lista{display:none}
+#mapa{width:100%;height:100%}
+@media (min-width:960px){
+  .explorar{display:grid;grid-template-columns:minmax(380px,460px) 1fr;height:calc(100vh - 66px)}
+  .lista{overflow:auto;padding:4px 24px 32px}
+  .mapa-wrap{display:block;padding:0 16px 16px 0}
+  #mapa{border-radius:22px;overflow:hidden;box-shadow:var(--sombra)}
+  .ver-mapa{display:none}
+  .explorar.con-mapa .lista{display:block}
+  .explorar.con-mapa .mapa-wrap{position:static}
+}
+.pin{background:var(--burdeos);color:#fff;font-family:var(--t);font-weight:700;font-size:13px;padding:5px 9px;border-radius:999px;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,.25);border:2px solid #fff;transform:translate(-50%,-50%);display:inline-block}
+.pin.lleno{background:#8d8387}
+.pin.sel{background:#2B2528;transform:translate(-50%,-50%) scale(1.12)}
+.yo{width:18px;height:18px;border-radius:50%;background:#2F6FED;border:3px solid #fff;box-shadow:0 0 0 8px rgba(47,111,237,.18)}
+.leaflet-div-icon{background:none;border:0}
+.leaflet-tile-pane{filter:saturate(.35) contrast(.95) brightness(1.03)}
+html.oscuro .leaflet-tile-pane{filter:invert(1) hue-rotate(180deg) saturate(.3) brightness(.85)}
+
+/* ---------- ficha ---------- */
+.ficha{max-width:980px;margin:0 auto;padding:0 0 120px}
+.galeria{position:relative;display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;aspect-ratio:4/3;max-height:460px;background:#2a1418}
+.galeria::-webkit-scrollbar{display:none}
+.galeria img{flex:none;width:100%;height:100%;object-fit:cover;scroll-snap-align:start}
+.galeria-wrap{position:relative}
+.galeria-wrap .volver{position:absolute;top:calc(env(safe-area-inset-top) + 12px);left:12px;z-index:2}
+.galeria-wrap .fav-g{position:absolute;top:calc(env(safe-area-inset-top) + 12px);right:12px;z-index:2;color:var(--burdeos)}
+.galeria-wrap .fav-g.on svg{fill:var(--burdeos)}
+.puntos{position:absolute;bottom:12px;left:0;right:0;display:flex;justify-content:center;gap:6px}
+.puntos i{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.5)}
+.puntos i.on{background:#fff;width:18px;border-radius:4px}
+.cuerpo{padding:20px 16px 0;position:relative}
+.cuerpo h1{font-size:28px;margin:0 0 6px;font-weight:700;line-height:1.1}
+.cuerpo .meta{font-size:14px}
+.acciones{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0 6px}
+.acc{height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;gap:8px;font-weight:700;font-size:14.5px;background:var(--superficie);border:1px solid var(--linea)}
+.acc.wa svg{color:#1F8A5B}
+.bloque{margin-top:26px}
+.bloque h2{font-size:18px;margin:0 0 12px;font-weight:700}
+.tabs{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin-bottom:12px}
+.tab{flex:none;height:38px;padding:0 14px;border-radius:12px;border:1px solid var(--linea);background:var(--superficie);font-weight:600;font-size:13.5px}
+.tab.on{background:var(--texto);color:var(--fondo);border-color:var(--texto)}
+.turnos{background:var(--superficie);border-radius:var(--radio);box-shadow:var(--sombra);overflow:hidden}
+.turno{display:flex;align-items:center;justify-content:space-between;padding:15px 16px;border-bottom:1px solid var(--linea)}
+.turno:last-child{border-bottom:0}
+.turno span{display:flex;align-items:center;gap:10px;font-weight:600}
+.turno span svg{color:var(--texto-2)}
+.turno b{font-family:var(--t);font-size:17px}
+.comod{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.comod div{display:flex;align-items:center;gap:10px;padding:12px;border-radius:14px;background:var(--superficie);border:1px solid var(--linea);font-size:14px;font-weight:600}
+.comod svg{color:var(--burdeos)}
+html.oscuro .comod svg{color:#E78AA2}
+.nota{display:flex;gap:12px;align-items:flex-start;padding:14px;border-radius:16px;background:var(--burdeos-claro);font-size:14px;line-height:1.45}
+.nota svg{color:var(--burdeos);margin-top:1px}
+html.oscuro .nota svg{color:#E78AA2}
+.acciones.tres{grid-template-columns:repeat(3,1fr)}
+.acciones.tres .acc{flex-direction:column;height:68px;gap:5px;font-size:13.5px;white-space:nowrap}
+.acciones.tres .acc svg{width:22px;height:22px;color:var(--burdeos)}
+.acciones.tres .acc.wa svg{color:#1F8A5B}
+html.oscuro .acciones.tres .acc svg{color:#E78AA2}html.oscuro .acciones.tres .acc.wa svg{color:#3FBF7F}
+.acciones.tres .acc.contacto.tel{background:var(--burdeos);border-color:var(--burdeos);color:#fff}
+.acciones.tres .acc.contacto.wa{background:#17734B;border-color:#17734B;color:#fff}
+.acciones.tres .acc.contacto.tel svg,.acciones.tres .acc.contacto.wa svg{color:#fff}
+.acc.apagado,.btn-pri.apagado{background:var(--fondo);border:1px dashed var(--linea);color:var(--texto-2);opacity:.55;pointer-events:none;cursor:not-allowed;box-shadow:none;user-select:none}
+.acciones.tres .acc.apagado svg{color:var(--texto-2)}
+.sin-dato{font-weight:500;color:var(--texto-2)}
+.datos{background:var(--superficie);border-radius:var(--radio);box-shadow:var(--sombra);overflow:hidden}
+.datos > div{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-bottom:1px solid var(--linea);font-size:14.5px;font-weight:600;line-height:1.35}
+.datos > div:last-child{border-bottom:0}
+.datos svg{color:var(--burdeos);margin-top:2px}
+html.oscuro .datos svg{color:#E78AA2}
+.datos small{display:block;font-weight:500;font-size:12px;color:var(--texto-2);margin-bottom:2px}
+.mini-mapa{height:170px;border-radius:var(--radio);overflow:hidden;margin-top:12px;cursor:pointer;box-shadow:var(--sombra)}
+.aviso-precios{font-size:12px;color:var(--texto-2);margin:12px 2px 0}
+.barra-contacto .btn-pri svg{width:19px;height:19px}
+.barra-contacto{position:fixed;left:0;right:0;bottom:0;z-index:35;display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:12px 16px calc(env(safe-area-inset-bottom) + 12px);background:var(--superficie);border-top:1px solid var(--linea)}
+.barra-contacto small{display:block;font-size:12px;color:var(--texto-2)}
+.barra-contacto b{font-family:var(--t);font-size:20px}
+.btn-pri{height:52px;padding:0 24px;border-radius:16px;background:var(--burdeos);color:#fff;font-weight:700;font-size:15.5px;display:inline-flex;align-items:center;gap:8px;box-shadow:0 8px 20px rgba(132,45,67,.32)}
+.btn-pri:disabled{opacity:.45;box-shadow:none}
+@media (min-width:960px){
+  .ficha{padding:24px 24px 120px}
+  .galeria-wrap{border-radius:24px;overflow:hidden}
+  .barra-contacto{left:248px}
+  .ficha-grid{display:grid;grid-template-columns:1fr 360px;gap:28px;align-items:start}
+  .galeria{aspect-ratio:auto;height:440px;max-height:none}
+  .cuerpo.lado{position:sticky;top:12px;padding-top:0}
+  .cuerpo.lado .bloque:first-child{margin-top:20px}
+}
+
+.meta .cuantas{margin-left:-4px}
+/* ---------- barra de arriba, tema y discreto ---------- */
+.top-der{display:flex;align-items:center;gap:8px}
+.btn-icono.chico{width:40px;height:40px;border-radius:13px}
+.hola .ubic{margin-bottom:6px}
+@media (min-width:960px){.top{justify-content:flex-end}}
+.galeria-wrap .tapar-g{position:absolute;top:calc(env(safe-area-inset-top) + 12px);right:64px;z-index:2}
+html.oscuro .acciones.tres .acc.contacto svg{color:#fff}
+html.oscuro .acciones.tres .acc.apagado svg{color:var(--texto-2)}
+.segmento{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:4px;border-radius:14px;background:var(--fondo);border:1px solid var(--linea);margin-top:10px}
+.segmento button{height:38px;border-radius:10px;font-weight:600;font-size:13.5px;color:var(--texto-2)}
+.segmento button.on{background:var(--superficie);color:var(--texto);box-shadow:var(--sombra)}
+.bloque-mas{background:var(--superficie);border-radius:var(--radio);box-shadow:var(--sombra);padding:16px;margin-bottom:14px}
+.bloque-mas h2{font-size:16px;margin:0 0 2px}
+.bloque-mas > small{color:var(--texto-2);font-size:13px;line-height:1.4;display:block}
+.fila-op{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 0;border-top:1px solid var(--linea);margin-top:12px;font-weight:600;font-size:14.5px;width:100%;text-align:left}
+.fila-op small{display:block;font-weight:400;color:var(--texto-2);font-size:12.5px;margin-top:2px}
+.fila-op + .fila-op{margin-top:0}
+.interruptor{width:46px;height:28px;border-radius:999px;background:var(--linea);position:relative;flex:none;transition:.2s}
+.interruptor::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:.2s}
+.interruptor.on{background:var(--burdeos)}
+.interruptor.on::after{left:21px}
+.btn-tapar{width:100%;height:48px;margin-top:12px;border-radius:14px;background:var(--texto);color:var(--fondo);font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px}
+/* pantalla de tapa (clima) */
+#tapa{position:fixed;inset:0;z-index:100;background:linear-gradient(180deg,#3B7DD8 0%,#6FA8EE 55%,#A9CBF5 100%);color:#fff;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;overflow:auto;-webkit-user-select:none;user-select:none}
+.clima{max-width:440px;margin:0 auto;padding:calc(env(safe-area-inset-top) + 48px) 20px 40px;text-align:center}
+.c-ciudad{font-size:28px;font-weight:500}
+.c-temp{font-size:96px;font-weight:200;line-height:1;margin:6px 0;cursor:default;touch-action:none}
+.c-estado{font-size:19px;font-weight:500;opacity:.95}
+.c-mm{font-size:16px;opacity:.9;margin-top:4px}
+.c-horas{display:flex;justify-content:space-between;margin-top:34px;padding:14px 12px;border-radius:18px;background:rgba(255,255,255,.18)}
+.c-horas div{display:flex;flex-direction:column;align-items:center;gap:8px;font-size:14px}
+.c-horas small{opacity:.9;font-size:13px}
+.c-horas svg,.c-dias svg{width:22px;height:22px;color:#FFE27A}
+.c-dias{margin-top:14px;padding:6px 14px;border-radius:18px;background:rgba(255,255,255,.18);text-align:left}
+.c-dias div{display:grid;grid-template-columns:1fr 26px 32px 1fr 32px;align-items:center;gap:8px;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.2);font-size:15px}
+.c-dias div:last-child{border-bottom:0}
+.c-dias i{height:5px;border-radius:3px;background:rgba(255,255,255,.3);position:relative;display:block}
+.c-dias em{position:absolute;top:0;bottom:0;border-radius:3px;background:linear-gradient(90deg,#FFE27A,#FFB347)}
+.c-pin{position:fixed;left:0;right:0;bottom:0;background:rgba(20,40,80,.55);backdrop-filter:blur(14px);padding:22px 20px calc(env(safe-area-inset-bottom) + 22px);transform:translateY(100%);transition:transform .25s}
+.c-pin.abierto{transform:none}
+.pin-dots{display:flex;justify-content:center;gap:14px;margin:0 0 18px}
+.pin-dots i{width:13px;height:13px;border-radius:50%;border:2px solid currentColor;opacity:.9}
+.pin-dots i.on{background:currentColor}
+.pin-dots.error{animation:temblar .35s}
+.pin-dots.grande{margin:18px 0 22px}.pin-dots.grande i{width:16px;height:16px;color:var(--burdeos)}
+@keyframes temblar{20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+.teclado{display:grid;grid-template-columns:repeat(3,72px);justify-content:center;gap:12px}
+.teclado button{height:60px;border-radius:50%;font-size:24px;font-weight:500;background:rgba(255,255,255,.18);color:#fff}
+.teclado.claro button{background:var(--fondo);color:var(--texto);border:1px solid var(--linea)}
+/* hoja de cómo llegar */
+.llegar{display:grid;gap:10px;margin-top:4px}
+.llegar a,.llegar button{display:flex;align-items:center;gap:14px;padding:14px;border-radius:16px;border:1px solid var(--linea);background:var(--superficie);text-align:left;width:100%}
+.llegar b{font-size:15.5px;display:block}
+.llegar small{color:var(--texto-2);font-size:13px}
+.ll-ico{width:44px;height:44px;border-radius:13px;display:grid;place-items:center;background:var(--burdeos-claro);color:var(--burdeos);flex:none}
+html.oscuro .ll-ico{color:#F0A9BB}
+.aviso-precios svg{width:14px;height:14px;vertical-align:-2px}
+/* ---------- versión real ---------- */
+.sin-foto{width:100%;height:100%;display:grid;place-items:center;align-content:center;gap:10px;background:radial-gradient(120% 90% at 30% 20%,#9b3a52,#5a1d2d 70%);color:rgba(255,255,255,.85);font-size:14px;font-weight:600}
+.sin-foto img{width:38%;max-width:90px;opacity:.35}
+.sin-foto.grande{aspect-ratio:16/9;max-height:300px}
+.sin-foto.grande img{width:84px}
+.nuevo{font-size:12px;font-weight:700;color:var(--texto-2);background:var(--fondo);border:1px solid var(--linea);padding:2px 8px;border-radius:999px}
+.precio .consultar{font-weight:600;color:var(--burdeos);font-size:13px}
+html.oscuro .precio .consultar{color:#F0A9BB}
+.pin.punto{width:14px;height:14px;padding:0;border-radius:50%}
+.enlace{color:var(--burdeos);text-decoration:underline;text-underline-offset:2px}
+html.oscuro .enlace{color:#F0A9BB}
+button.ubic{cursor:pointer;font:inherit}
+@media (min-width:960px){.sin-foto.grande{aspect-ratio:auto;height:300px}}
+.texto-largo h2{font-size:17px;margin:22px 0 6px}
+.texto-largo p{line-height:1.55;color:var(--texto);margin:0 0 10px;font-size:15px}
+.fav[aria-pressed="true"] svg{fill:var(--burdeos)}
+.descripcion{margin:0;line-height:1.55;font-size:15px;white-space:pre-line}
+a.duenos{display:block;text-decoration:none}
+/* ---------- otras ---------- */
+.simple{max-width:640px;margin:0 auto;padding:8px 16px 40px}
+.simple h1{font-size:26px;margin:6px 0 16px}
+.vacio{text-align:center;padding:48px 20px;color:var(--texto-2)}
+.vacio svg{width:44px;height:44px;color:var(--burdeos);opacity:.6}
+.lista-mas{background:var(--superficie);border-radius:var(--radio);box-shadow:var(--sombra);overflow:hidden}
+.lista-mas a,.lista-mas button{display:flex;align-items:center;gap:12px;padding:16px;border-bottom:1px solid var(--linea);width:100%;text-align:left;font-weight:600}
+.lista-mas > :last-child{border-bottom:0}
+.lista-mas small{display:block;font-weight:400;color:var(--texto-2);font-size:13px;margin-top:2px}
+.duenos-card{margin-top:16px;padding:20px;border-radius:20px;background:var(--burdeos);color:#fff;position:relative;overflow:hidden}
+.duenos-card h2{margin:0 0 6px;font-size:20px}
+.duenos-card p{margin:0 0 14px;opacity:.85;line-height:1.45;font-size:14.5px}
+.duenos-card .btn-b{display:inline-flex;height:44px;align-items:center;padding:0 16px;border-radius:12px;background:#fff;color:var(--burdeos);font-weight:700}
+
+/* hoja de filtros */
+.velo{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:50;opacity:0;pointer-events:none;transition:.2s}
+.hoja{position:fixed;left:0;right:0;bottom:0;z-index:51;background:var(--superficie);border-radius:24px 24px 0 0;padding:10px 18px calc(env(safe-area-inset-bottom) + 18px);transform:translateY(105%);transition:transform .28s cubic-bezier(.2,.8,.2,1);max-height:86vh;overflow:auto}
+.hoja.abierta{transform:none}.velo.abierta{opacity:1;pointer-events:auto}
+.hoja .asa{width:44px;height:5px;border-radius:3px;background:var(--linea);margin:0 auto 14px}
+.hoja h2{margin:0 0 4px;font-size:20px}
+.rango{width:100%;accent-color:var(--burdeos)}
+.hoja .chips{flex-wrap:wrap;margin:0;padding:0}
+@media (min-width:960px){.hoja{left:50%;right:auto;width:480px;bottom:auto;top:50%;border-radius:24px;transform:translate(-50%,-40%);opacity:0;pointer-events:none;transition:.2s}
+  .hoja.abierta{transform:translate(-50%,-50%);opacity:1;pointer-events:auto}}
+.entra{animation:entra .32s ease both}
+@keyframes entra{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+</style>
+<script>
+(function(){var t='auto';try{t=JSON.parse(localStorage.getItem('mc-tema'))||'auto'}catch(e){}
+var osc=t==='oscuro'||(t==='auto'&&matchMedia('(prefers-color-scheme: dark)').matches);
+if(osc)document.documentElement.classList.add('oscuro');})();
+</script>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute"><desc>MC-B99959955768</desc>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></symbol>
+  <symbol id="i-buscar" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+  <symbol id="i-filtro" viewBox="0 0 24 24"><path d="M4 6h16M7 12h10M10 18h4"/></symbol>
+  <symbol id="i-corazon" viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></symbol>
+  <symbol id="i-ticket" viewBox="0 0 24 24"><path d="M4 8a2 2 0 0 0 2-2h12a2 2 0 0 0 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 0-2 2H6a2 2 0 0 0-2-2v-2a2 2 0 0 0 0-4z"/><path d="M14 6v12" stroke-dasharray="2 2"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/></symbol>
+  <symbol id="i-estrella" viewBox="0 0 24 24"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></symbol>
+  <symbol id="i-hidro" viewBox="0 0 24 24"><path d="M4 12h16v3a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4z"/><path d="M6 12V6a2 2 0 0 1 4 0M8 21l-1 1M16 21l1 1M13 5c1 1 1 2 0 3M16 5c1 1 1 2 0 3"/></symbol>
+  <symbol id="i-garaje" viewBox="0 0 24 24"><path d="M3 10 12 4l9 6v10H3z"/><path d="M7 20v-7h10v7M7 16h10"/></symbol>
+  <symbol id="i-pileta" viewBox="0 0 24 24"><path d="M3 17c2 0 2-1.5 4.5-1.5S10 17 12 17s2-1.5 4.5-1.5S19 17 21 17M3 21c2 0 2-1.5 4.5-1.5S10 21 12 21s2-1.5 4.5-1.5S19 21 21 21M8 14V5a2 2 0 0 1 4 0M16 14V5a2 2 0 0 0-4 0"/></symbol>
+  <symbol id="i-aire" viewBox="0 0 24 24"><path d="M12 3v18M4.2 7.5l15.6 9M4.2 16.5l15.6-9M9 4l3 2 3-2M9 20l3-2 3 2"/></symbol>
+  <symbol id="i-wifi" viewBox="0 0 24 24"><path d="M2.5 9a14 14 0 0 1 19 0M5.5 12.5a9.5 9.5 0 0 1 13 0M8.8 16a4.8 4.8 0 0 1 6.4 0"/><circle cx="12" cy="19.5" r=".8"/></symbol>
+  <symbol id="i-reloj" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-luna" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></symbol>
+  <symbol id="i-tv" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="12" rx="2"/><path d="M8 21h8"/></symbol>
+  <symbol id="i-volver" viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></symbol>
+  <symbol id="i-ruta" viewBox="0 0 24 24"><path d="m3 11 18-8-8 18-2-8z"/></symbol>
+  <symbol id="i-wa" viewBox="0 0 24 24"><path d="M4 20l1.3-3.9A8 8 0 1 1 8 19z"/><path d="M9 9.5c.3 2 2.5 4.3 4.6 4.8l1.2-1.3 1.8.8c-.3 1.2-1.3 1.9-2.5 1.7C11 15 8.6 12.6 8.2 10c-.2-1.2.5-2.2 1.7-2.5l.8 1.8z"/></symbol>
+  <symbol id="i-escudo" viewBox="0 0 24 24"><path d="M12 3 5 6v5c0 4.5 3 8.4 7 10 4-1.6 7-5.5 7-10V6z"/><path d="m9 12 2 2 4-4"/></symbol>
+  <symbol id="i-mapa" viewBox="0 0 24 24"><path d="m9 4-6 2.5v13.5l6-2.5 6 2.5 6-2.5V4l-6 2.5z"/><path d="M9 4v13.5M15 6.5V20"/></symbol>
+  <symbol id="i-lista" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3.5 6h.01M3.5 12h.01M3.5 18h.01"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></symbol>
+  <symbol id="i-basura" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></symbol>
+  <symbol id="i-tienda" viewBox="0 0 24 24"><path d="M4 9 5.5 4h13L20 9M4 9v11h16V9M4 9h16M9 20v-6h6v6"/></symbol>
+  <symbol id="i-tel" viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></symbol>
+  <symbol id="i-pago" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h3"/></symbol>
+  <symbol id="i-sol" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/></symbol>
+  <symbol id="i-ojo-no" viewBox="0 0 24 24"><path d="M3 3l18 18M10.6 6.1A9.8 9.8 0 0 1 12 6c5 0 8.5 4.2 9.5 6-.5.9-1.6 2.4-3.1 3.7M6.3 7.6C4.5 8.9 3.1 10.7 2.5 12c1 1.8 4.5 6 9.5 6 1.6 0 3-.4 4.3-1M9.9 9.9a3 3 0 0 0 4.2 4.2"/></symbol>
+  <symbol id="i-auto" viewBox="0 0 24 24"><path d="M5 16h14v-4l-2-5H7l-2 5zM3 12h18"/><circle cx="7.5" cy="16.5" r="1.8"/><circle cx="16.5" cy="16.5" r="1.8"/></symbol>
+  <symbol id="i-ayuda" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .8-1 1.5V14M12 17.5h.01"/></symbol>
+</svg>
+
+<div class="app">
+  <aside class="side">
+    <div class="marca"><img src="marca/logo-horizontal-oscuro.svg" alt="Motel Cerca"></div>
+    <a href="#/" data-nav="explorar"><svg class="i"><use href="#i-pin"/></svg>Explorar</a>
+    <a href="#/favoritos" data-nav="favoritos"><svg class="i"><use href="#i-corazon"/></svg>Favoritos</a>
+    <a href="#/mas" data-nav="mas"><svg class="i"><use href="#i-menu"/></svg>Más</a>
+    <a class="duenos" href="https://wa.me/595982702613?text=Hola%2C%20tengo%20un%20motel%20y%20quiero%20sumarlo%20a%20Motel%20Cerca%20%28fotos%2C%20precios%20y%20WhatsApp%29.%20El%20motel%20se%20llama%3A%20" target="_blank" rel="noopener"><b>¿Tenés un motel?</b>Mostrá tus habitaciones y precios a la gente que está buscando cerca.</a>
+    <div class="pie">Un sistema de orbepy⁠​‌​​‌‌​‌​‌​​​​‌‌​​‌​‌‌​‌​‌​​​​‌​​​‌‌‌​​‌​​‌‌‌​​‌​​‌‌‌​​‌​​‌‌​‌​‌​​‌‌‌​​‌​​‌‌‌​​‌​​‌‌​‌​‌​​‌‌​‌​‌​​‌‌​‌‌‌​​‌‌​‌‌​​​‌‌‌​​​⁠</div>
+  </aside>
+
+  <main id="vista"></main>
+
+  <nav class="bottom">
+    <a href="#/" data-nav="explorar"><svg class="i"><use href="#i-pin"/></svg>Explorar</a>
+    <a href="#/favoritos" data-nav="favoritos"><svg class="i"><use href="#i-corazon"/></svg>Favoritos</a>
+    <a href="#/mas" data-nav="mas"><svg class="i"><use href="#i-menu"/></svg>Más</a>
+  </nav>
+</div>
+
+<div class="velo" id="velo"></div>
+<div class="hoja" id="hoja" role="dialog" aria-modal="true" aria-label="Opciones"></div>
+
+<script src="config.js"></script>
+<script src="vendor/supabase-2.45.4.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script>
+/* ===== Datos reales: se cargan de datos/moteles-app.json ===== */
+const MC_FIRMA = 'MC-B99959955768', MC_AUTOR = 'MOTEL CERCA · © 2026 José Cabrera (orbepy)';
+const CENTRO = {lat:-25.3200, lng:-57.5500}; // Gran Asunción, si no hay ubicación
+let YO = {...CENTRO}, ubicado = false;
+let MOTELES = [], DATOS_FECHA = '', errorCarga = false;
+const TURNOS_ORDEN = ['2 horas','3 horas','4 horas','Pernocte','Día entero'];
+const COMOD = {hidro:['Hidromasaje','i-hidro'], garaje:['Garaje privado','i-garaje'], pileta:['Pileta','i-pileta'], aire:['Aire acondicionado','i-aire'], wifi:['Wi-Fi','i-wifi'], tv:['TV con cable','i-tv'], '24h':['Abierto 24 h','i-reloj'], tematica:['Habitaciones temáticas','i-luna']};
+
+/* ===== Utilidades ===== */
+const $ = s => document.querySelector(s);
+const gs = n => 'Gs. ' + n.toLocaleString('es-PY');
+const mil = n => Math.round(n/1000) + ' mil';
+const ico = (id, cls='i') => `<svg class="${cls}"><use href="#${id}"/></svg>`;
+const esc = t => String(t ?? '').replace(/[<>&"]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));
+function dist(a,b){const R=6371,r=x=>x*Math.PI/180;const d=Math.acos(Math.max(-1,Math.min(1,Math.sin(r(a.lat))*Math.sin(r(b.lat))+Math.cos(r(a.lat))*Math.cos(r(b.lat))*Math.cos(r(b.lng-a.lng)))))*R;return d*1.3;} // x1.3 = calle, no línea recta
+const waLindo = w => { const d = String(w).replace(/\D/g,'').replace(/^595/,'0'); return d.length===10 ? `${d.slice(0,4)} ${d.slice(4,7)} ${d.slice(7)}` : d; };
+const telLink = t => { const d = String(t).replace(/\D/g,''); return d.startsWith('595') ? '+' + d : '+595' + d.replace(/^0/,''); };
+const fechaCorta = f => { if(!f) return ''; const d = new Date(f); return isNaN(d) ? f : d.toLocaleDateString('es-PY',{month:'short', year:'numeric'}); };
+const urlSegura = u => { try{ const x = new URL(String(u)); return /^https?:$/.test(x.protocol) ? x.href : null; }catch(e){ return null; } };
+const sinTildes = t => String(t||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+function prepararMotel(m){
+  m.id = String(m.id||'').replace(/[^a-z0-9-]/gi,'').slice(0,80) || ('motel-' + Math.random().toString(36).slice(2,8));
+  m.facebook = urlSegura(m.facebook); m.instagram = urlSegura(m.instagram); m.web = urlSegura(m.web);
+  m.wa = m.wa ? String(m.wa).replace(/\D/g,'') || null : null; m.tel = m.tel ? String(m.tel).replace(/[^\d()+ -]/g,'').trim() || null : null;
+  m.fotos = (m.fotos||[]).filter(f => /^(https:\/\/|fotos\/)/.test(String(f)) || (window.MC_CONFIG && MC_CONFIG.supabaseUrl && String(f).startsWith(MC_CONFIG.supabaseUrl + '/storage/v1/object/public/fotos/')));
+  m.descripcion = String(m.descripcion || '').slice(0, 600);
+  m.lat = +m.lat; m.lng = +m.lng;
+  m.zona = m.ciudad; m.dir = m.direccion || 'Dirección por confirmar';
+  m.comod = (m.comod||[]).filter(c=>COMOD[c]);
+  const grupos = Object.create(null);
+  (m.precios||[]).filter(x=>x.precio_gs).forEach(x=>{ const h = x.habitacion || 'Habitación'; (grupos[h] ||= []).push({turno:x.turno||'Turno', p:+x.precio_gs}); });
+  m.hab = Object.entries(grupos).map(([t,lista])=>({t, turnos:lista.sort((a,b)=>{const ia=TURNOS_ORDEN.indexOf(a.turno), ib=TURNOS_ORDEN.indexOf(b.turno); return (ia<0?9:ia)-(ib<0?9:ib) || a.p-b.p;})}));
+  const todos = m.hab.flatMap(h=>h.turnos);
+  const cortos = todos.filter(x=>/^2\s*(h|hs|horas?)$/i.test(x.turno.trim()));
+  m.desde = (cortos.length ? Math.min(...cortos.map(x=>x.p)) : todos.length ? Math.min(...todos.map(x=>x.p)) : null);
+  m.desdeTxt = cortos.length ? '2 horas desde' : 'Desde';
+}
+function calcularDistancias(){ MOTELES.forEach(m=>{ m.km = dist(YO,m); m.min = Math.max(3, Math.round(m.km/0.45)); }); }
+// Contacto de los dueños: WhatsApp de Orbe (decisión de José, 14/11/2026). El panel duenos.html queda para cuando haya base.
+const ORBE_WA = '595982702613';
+const ORBE_WA_SUMARSE = 'https://wa.me/595982702613?text=Hola%2C%20tengo%20un%20motel%20y%20quiero%20sumarlo%20a%20Motel%20Cerca%20%28fotos%2C%20precios%20y%20WhatsApp%29.%20El%20motel%20se%20llama%3A%20';
+const orbeWaFicha = m => `https://wa.me/${ORBE_WA}?text=${encodeURIComponent(`Hola, soy de ${m.nombre} (${m.zona}) y quiero completar nuestra ficha en Motel Cerca: fotos, precios y WhatsApp.`)}`;
+const CFG = window.MC_CONFIG || {};
+const sb = (CFG.supabaseUrl && CFG.supabaseKey && window.supabase) ? window.supabase.createClient(CFG.supabaseUrl, CFG.supabaseKey, {auth:{persistSession:true, storageKey:'mc-sesion'}}) : null;
+const urlFoto = ruta => `${CFG.supabaseUrl}/storage/v1/object/public/fotos/${ruta}`;
+async function cargarDeBD(){
+  const [mo, fi, fo] = await Promise.all([
+    sb.from('moteles').select('id,nombre,ciudad,direccion,lat,lng,tel,wa,facebook,instagram,web,horario,comod,visible,actualizado'),
+    sb.from('fichas').select('*'),
+    sb.from('fotos').select('motel_id,ruta,orden').eq('estado','aprobada').order('orden')]);
+  for(const r of [mo, fi, fo]) if(r.error) throw r.error;
+  const fichas = Object.fromEntries(fi.data.map(f=>[f.motel_id, f]));
+  const fotos = {}; fo.data.forEach(f => (fotos[f.motel_id] ||= []).push(urlFoto(f.ruta)));
+  return mo.data.map(m => {
+    const f = fichas[m.id];
+    if(f){
+      for(const k of ['tel','wa','horario','facebook','instagram','web']) if(f[k]) m[k] = f[k];
+      if(f.comod && f.comod.length) m.comod = f.comod;
+      m.descripcion = f.descripcion || '';
+      if(f.precios && f.precios.length){ m.precios = f.precios.map(p=>({...p, fecha:f.actualizado})); m.precios_origen = 'el propio motel'; m.precios_fecha = f.actualizado; }
+      m.ficha_del_dueno = true;
+    }
+    m.fotos = fotos[m.id] || [];
+    return m;
+  });
+}
+async function cargarDatos(){
+  if(sb){
+    try{
+      const lista = await cargarDeBD();
+      DATOS_FECHA = new Date().toISOString().slice(0,10); MOTELES = lista.filter(m=>m.visible!==false && isFinite(+m.lat) && isFinite(+m.lng));
+      MOTELES = MOTELES.filter(m => { try{ prepararMotel(m); return true; }catch(e){ console.warn('motel con datos inválidos', m && m.id); return false; } }); calcularDistancias();
+      errorCarga = false; return;
+    }catch(e){ console.warn('La base no respondió; uso el archivo de datos.', e); }
+  }
+  try{
+    const r = await fetch('datos/moteles-app.json', {cache:'no-cache'}); if(!r.ok) throw new Error('HTTP ' + r.status); const d = await r.json();
+    DATOS_FECHA = d.generado || ''; MOTELES = (d.moteles||[]).filter(m=>m.visible!==false && isFinite(+m.lat) && isFinite(+m.lng)); MOTELES = MOTELES.filter(m => { try{ prepararMotel(m); return true; }catch(e){ console.warn('motel con datos inválidos', m && m.id); return false; } }); calcularDistancias();
+    errorCarga = false;
+  }catch(e){ MOTELES = []; errorCarga = true; console.error('No se pudieron cargar los moteles', e); }
+}
+let zonaCercana = '', lejos = false;
+function refrescarUbicacion(){
+  const chip = $('#ubic'); if(!chip || !$('#tarjetas')){ render(); aplicarTema(); return; }
+  chip.innerHTML = `${ico('i-pin')}${lejos?'Estás lejos de Gran Asunción':`Cerca de vos${zonaCercana?' · '+esc(zonaCercana):''}`}`;
+  const h = $('.sec h2'); if(h) h.textContent = !lejos ? 'Más cerca de vos' : 'Moteles en Gran Asunción';
+  if(lejos && !$('.lista .nota')) $('#tarjetas').insertAdjacentHTML('beforebegin', `<div class="nota" style="margin-bottom:12px">${ico('i-pin')}<div>Por ahora solo tenemos moteles de Gran Asunción. Te los mostramos ordenados por distancia.</div></div>`);
+  if(mapa && window.L){ if(capaYo) capaYo.remove(); capaYo = L.marker([YO.lat,YO.lng],{icon:L.divIcon({html:'<div class="yo"></div>',iconSize:[18,18],className:''})}).addTo(mapa); }
+  pintarLista();
+}
+
+function usarUbicacion(auto=false){
+  if(!navigator.geolocation){ if(!auto) alert('Tu navegador no permite usar la ubicación.'); return; }
+  const chip = $('#ubic'); if(chip) chip.textContent = 'Buscando moteles cerca de vos…';
+  navigator.geolocation.getCurrentPosition(pos => {
+      YO = {lat:pos.coords.latitude, lng:pos.coords.longitude}; ubicado = true; calcularDistancias();
+      const masCerca = [...MOTELES].sort((a,b)=>a.km-b.km)[0];
+      zonaCercana = masCerca ? masCerca.zona : ''; lejos = !masCerca || masCerca.km > 40;
+      if(!location.hash || location.hash==='#/' ) refrescarUbicacion(); },
+    () => { if(chip) chip.innerHTML = `${ico('i-pin')}Gran Asunción · usar mi ubicación`; if(!auto) alert('No pudimos usar tu ubicación. Te mostramos los moteles de Gran Asunción.'); },
+    {enableHighAccuracy:false, timeout:12000, maximumAge:600000});
+}
+const guardado = (k,v) => {try{ if(v===undefined) return JSON.parse(localStorage.getItem('mc-'+k)); localStorage.setItem('mc-'+k, JSON.stringify(v)); }catch(e){ return null; }};
+let favs = new Set(guardado('favs') || []);
+const filtros = {comod:new Set(), max:600000, maxTocado:false, orden:'cerca'};
+
+function foto(n, alt){return `<img src="${esc(n)}" alt="${esc(alt)}" loading="lazy" onerror="this.remove()">`;}
+function sinFoto(m, grande){ return `<div class="sin-foto ${grande?'grande':''}"><img src="marca/monograma-blanco.svg" alt="">${grande?'<span>Este motel todavía no subió fotos</span>':''}</div>`; }
+function toggleFav(id){ favs.has(id)?favs.delete(id):favs.add(id); guardado('favs',[...favs]);
+  if(location.hash.startsWith('#/favoritos')) return render();
+  document.querySelectorAll(`[data-fav="${CSS.escape(id)}"]`).forEach(b=>{ b.classList.toggle('on', favs.has(id)); b.setAttribute('aria-pressed', favs.has(id)); }); }
+
+/* ===== Vistas ===== */
+function tarjeta(m){
+  return `<a class="card" href="#/motel/${esc(m.id)}" data-id="${esc(m.id)}">
+    <div class="foto">${m.fotos.length ? foto(m.fotos[0], m.nombre) : sinFoto(m)}
+      <button class="fav ${favs.has(m.id)?'on':''}" data-fav="${m.id}" aria-label="Guardar">${ico('i-corazon')}</button></div>
+    <div class="info">
+      <h3>${esc(m.nombre)}</h3>
+      ${ubicado?`<div class="meta"><span>${m.km.toFixed(1).replace('.',',')} km · ${m.min} min</span></div>`:''}
+      <div class="meta">${esc(m.zona)}</div>
+      ${m.comod.length ? `<div class="iconitos" title="${m.comod.map(c=>COMOD[c][0]).join(', ')}">${m.comod.filter(c=>c!=='wifi'&&c!=='tv').slice(0,4).map(c=>ico(COMOD[c][1])).join('')}</div>` : ''}
+      <div class="precio">${m.desde ? `<small>${m.desdeTxt}</small><b>${gs(m.desde)}</b>` : `<small class="consultar">${m.wa||m.tel ? 'Consultá los precios' : 'Precios sin cargar'}</small>`}</div>
+    </div></a>`;
+}
+function filtrados(){
+  let l = MOTELES.filter(m => [...filtros.comod].every(c=>m.comod.includes(c)) && (!filtros.maxTocado || (m.desde && m.desde<=filtros.max)));
+  const q = sinTildes(($('#q')?.value||'').trim());
+  if(q) l = l.filter(m => sinTildes(m.nombre+' '+m.zona+' '+(m.dir||'')).includes(q));
+  const sinP = 1e12;
+  return l.sort((a,b)=> filtros.orden==='precio' ? (a.desde||sinP)-(b.desde||sinP) : a.km-b.km);
+}
+const CHIPS = [['hidro','Hidromasaje','i-hidro'],['garaje','Garaje privado','i-garaje'],['pileta','Pileta','i-pileta'],['24h','24 horas','i-reloj']];
+function chipsHTML(){return CHIPS.map(([k,t,i])=>{const on=filtros.comod.has(k);return `<button class="chip ${on?'on':''}" data-chip="${k}">${ico(i)}${t}</button>`}).join('');}
+
+let mapa, capas = {}, capaYo = null, miniMapa = null;
+function vistaExplorar(){
+  $('#vista').innerHTML = `
+    <header class="top"><img class="logo-mov logo-claro" src="marca/logo-horizontal-claro.svg" alt="Motel Cerca"><img class="logo-mov logo-oscuro" src="marca/logo-horizontal-oscuro.svg" alt="Motel Cerca">
+      <div class="top-der"><button class="btn-icono chico" data-tema-rapido aria-label="Cambiar tema"></button><button class="btn-icono chico" data-tapar aria-label="Tapar la app" title="Tapar la app">${ico('i-ojo-no')}</button></div></header>
+    <section class="explorar" id="explorar">
+      <div class="lista">
+        <div class="hola entra"><button class="ubic" id="ubic" data-ubicar>${ico('i-pin')}${ubicado?(lejos?'Estás lejos de Gran Asunción':`Cerca de vos${zonaCercana?' · '+zonaCercana:''}`):'Gran Asunción · usar mi ubicación'}</button><h1>Moteles <em>cerca</em><br>de vos</h1><p>Encontrá el más cercano, mirá sus datos y escribile directo.</p></div>
+        <label class="buscador">${ico('i-buscar')}<input id="q" placeholder="Buscá por nombre o ciudad" autocomplete="off">
+          <button class="btn-filtro" id="abrir-filtros">${ico('i-filtro')}Filtros</button></label>
+        <div class="chips" id="chips">${chipsHTML()}</div>
+        <div class="sec"><h2>${ubicado&&!lejos?'Más cerca de vos':'Moteles en Gran Asunción'}</h2><span id="cuenta"></span></div>
+        ${ubicado&&lejos?`<div class="nota" style="margin-bottom:12px">${ico('i-pin')}<div>Por ahora solo tenemos moteles de Gran Asunción. Te los mostramos ordenados por distancia.</div></div>`:''}<div class="tarjetas" id="tarjetas"></div>
+        <p class="aviso-demo">Datos públicos en verificación${DATOS_FECHA?` · actualizado ${fechaCorta(DATOS_FECHA)}`:""}. ¿Sos dueño de un motel? Escribinos para corregir tu ficha.</p>
+      </div>
+      <div class="mapa-wrap"><div id="mapa"></div></div>
+    </section>
+    <button class="ver-mapa" id="ver-mapa">${ico('i-mapa')}Ver en el mapa</button>`;
+  pintarLista();
+  iniciarMapa();
+  $('#q').addEventListener('input', pintarLista);
+  $('#abrir-filtros').onclick = e => {e.preventDefault(); abrirFiltros();};
+  $('#ver-mapa').onclick = () => {const ex=$('#explorar');ex.classList.toggle('con-mapa');const on=ex.classList.contains('con-mapa');
+    $('#ver-mapa').innerHTML = on?ico('i-lista')+'Ver la lista':ico('i-mapa')+'Ver en el mapa'; setTimeout(()=>{if(mapa){mapa.invalidateSize();pintarPines(filtrados());}},60);};
+}
+function pintarLista(){
+  const l = filtrados();
+  $('#tarjetas').innerHTML = errorCarga ? `<div class="vacio">${ico('i-mapa')}<p>No pudimos cargar los moteles.<br>Revisá tu conexión a internet.</p><button class="btn-pri" id="reintentar">Reintentar</button></div>`
+    : l.length ? l.map(tarjeta).join('') : `<div class="vacio">${ico('i-buscar')}<p>No hay moteles con esos filtros.<br>Probá sacando alguno.</p></div>`;
+  if($('#reintentar')) $('#reintentar').onclick = async () => { $('#tarjetas').innerHTML = '<div class="vacio">Cargando moteles…</div>'; await cargarDatos(); render(); aplicarTema(); };
+  $('#cuenta').textContent = l.length + (l.length===1?' motel':' moteles');
+  $('#chips').innerHTML = chipsHTML();
+  if(mapa) pintarPines(l);
+}
+function iniciarMapa(){
+  if(!window.L) return;
+  mapa = L.map('mapa',{zoomControl:false,attributionControl:true}).setView([YO.lat,YO.lng],12);
+  L.control.zoom({position:'bottomright'}).addTo(mapa);
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>',maxZoom:19}).addTo(mapa);
+  capaYo = ubicado ? L.marker([YO.lat,YO.lng],{icon:L.divIcon({html:'<div class="yo"></div>',iconSize:[18,18],className:''})}).addTo(mapa) : null;
+  pintarPines(filtrados());
+}
+function pintarPines(l){
+  Object.values(capas).forEach(c=>c.remove()); capas={};
+  l.forEach(m=>{
+    const mk = L.marker([m.lat,m.lng],{icon:L.divIcon({html: m.desde ? `<span class="pin">${mil(m.desde)}</span>` : `<span class="pin punto" title="${esc(m.nombre)}"></span>`,iconSize:[0,0],className:''})}).addTo(mapa);
+    mk.on('click',()=>{location.hash='#/motel/'+m.id;});
+    mk.on('mouseover',()=>marcar(m.id,true)); mk.on('mouseout',()=>marcar(m.id,false));
+    capas[m.id]=mk;
+  });
+  if(l.length){ const cerca = ubicado ? l.slice(0,12) : l; mapa.fitBounds(L.latLngBounds([...(ubicado?[[YO.lat,YO.lng]]:[]), ...cerca.map(m=>[m.lat,m.lng])]).pad(0.12), {animate:false}); }
+}
+function marcar(id,on){document.querySelector(`.card[data-id="${id}"]`)?.classList.toggle('on',on);
+  const el=capas[id]?.getElement()?.querySelector('.pin'); if(el) el.classList.toggle('sel',on);}
+
+function vistaMotel(id){
+  const m = MOTELES.find(x=>x.id===id); if(!m) return vistaExplorar();
+  let hab = 0;
+  const waTxt = encodeURIComponent('Hola, los encontré en Motel Cerca. ¿Me pasan los precios y las habitaciones?');
+  const waUrl = m.wa ? `https://wa.me/${String(m.wa).replace(/\D/g,'')}?text=${waTxt}` : '';
+  const redes = [m.facebook&&['Facebook',m.facebook], m.instagram&&['Instagram',m.instagram], m.web&&['Sitio web',m.web]].filter(Boolean);
+  $('#vista').innerHTML = `
+    <article class="ficha entra">
+      <div class="galeria-wrap">
+        <a class="btn-icono volver" href="#/" aria-label="Volver">${ico('i-volver')}</a>
+        <button class="btn-icono tapar-g" data-tapar aria-label="Tapar la app">${ico('i-ojo-no')}</button>
+        <button class="btn-icono fav-g ${favs.has(m.id)?'on':''}" data-fav="${m.id}" aria-label="Guardar">${ico('i-corazon')}</button>
+        ${m.fotos.length ? `<div class="galeria" id="galeria">${m.fotos.map(f=>foto(f,m.nombre)).join('')}</div>
+        <div class="puntos" id="puntos">${m.fotos.map((_,i)=>`<i class="${i?'':'on'}"></i>`).join('')}</div>` : sinFoto(m, true)}
+      </div>
+      <div class="ficha-grid"><div class="cuerpo">
+        <h1>${esc(m.nombre)}</h1>
+        <div class="meta"><span>${esc(m.zona)}</span></div>
+        <div class="meta" style="margin-top:4px">${esc(m.dir)}${ubicado?` · ${m.km.toFixed(1).replace('.',',')} km (${m.min} min)`:''}</div>
+        <div class="acciones tres">
+          <a class="acc" href="#" data-llegar>${ico('i-ruta')}Cómo llegar</a>
+          ${m.tel ? `<a class="acc contacto tel" href="tel:${telLink(m.tel)}">${ico('i-tel')}Llamar</a>` : `<span class="acc contacto apagado" aria-disabled="true" title="Este motel no cargó un teléfono">${ico('i-tel')}Llamar</span>`}
+          ${m.wa ? `<a class="acc contacto wa" href="${waUrl}" target="_blank" rel="noopener">${ico('i-wa')}WhatsApp</a>` : `<span class="acc contacto apagado" aria-disabled="true" title="Este motel no tiene WhatsApp cargado">${ico('i-wa')}WhatsApp</span>`}
+        </div>
+        ${m.descripcion ? `<div class="bloque"><h2>Sobre el motel</h2><p class="descripcion">${esc(m.descripcion)}</p></div>` : ''}
+        <div class="bloque"><h2>Turnos y precios</h2>
+          ${m.hab.length ? `<div class="tabs" id="tabs">${m.hab.map((h,i)=>`<button class="tab ${i?'':'on'}" data-hab="${i}">${esc(h.t)}</button>`).join('')}</div>
+          <div class="turnos" id="turnos"></div>
+          <p class="aviso-precios">${m.precios_origen ? `Precios según ${esc(m.precios_origen)}${m.precios_fecha?` (${fechaCorta(m.precios_fecha)})`:''}. ` : ''}Pueden cambiar: confirmalos con el motel.</p>`
+          : `<div class="nota">${ico('i-reloj')}<div>Este motel todavía no publicó sus precios. ${m.wa||m.tel ? 'Consultalos por WhatsApp o llamando.' : ''}</div></div>`}
+        </div>
+        ${m.comod.length ? `<div class="bloque"><h2>Lo que tiene</h2><div class="comod">${m.comod.map(c=>`<div>${ico(COMOD[c][1])}${COMOD[c][0]}</div>`).join('')}</div></div>` : ''}
+      </div><aside class="cuerpo lado">
+        <div class="bloque"><h2>Datos del motel</h2>
+          <div class="datos">
+            <div>${ico('i-pin')}<span><small>Dirección</small>${esc(m.dir)}, ${esc(m.zona)}</span></div>
+            ${m.horario ? `<div>${ico('i-reloj')}<span><small>Horario</small>${esc(m.horario)}</span></div>` : ''}
+            <div>${ico('i-tel')}<span><small>Teléfono</small>${m.tel ? esc(m.tel) : '<span class="sin-dato">Este motel todavía no cargó un teléfono</span>'}</span></div>
+            ${m.wa ? `<div>${ico('i-wa')}<span><small>WhatsApp</small>${esc(waLindo(m.wa))}</span></div>` : ''}
+            ${redes.length ? `<div>${ico('i-ayuda')}<span><small>Redes</small>${redes.map(([n,u])=>`<a class="enlace" href="${esc(u)}" target="_blank" rel="noopener">${n}</a>`).join(' · ')}</span></div>` : ''}
+          </div>
+          <div class="mini-mapa" id="mini-mapa"></div>
+          <p class="aviso-precios">${m.ficha_del_dueno ? 'Datos cargados por el propio motel.' : 'Datos públicos en verificación.'} ¿Sos el dueño? <a class="enlace" href="${orbeWaFicha(m)}" target="_blank" rel="noopener">Escribinos por WhatsApp para completar tu ficha</a>.</p>
+        </div>
+      </aside></div>
+    </article>
+    <div class="barra-contacto"><div>${m.desde ? `<small>${m.desdeTxt}</small><b id="desde-b">${gs(m.desde)}</b>` : `<small>${esc(m.zona)}</small><b style="font-size:16px">${esc(m.nombre)}</b>`}</div>
+      ${m.wa ? `<a class="btn-pri" href="${waUrl}" target="_blank" rel="noopener">${ico('i-wa')}Consultar</a>` : m.tel ? `<a class="btn-pri" href="tel:${telLink(m.tel)}">${ico('i-tel')}Llamar</a>` : `<span class="btn-pri apagado" aria-disabled="true">Sin contacto</span>`}</div>`;
+  const pintarTurnos = () => {
+    if(!m.hab.length) return;
+    $('#turnos').innerHTML = m.hab[hab].turnos.map(x=>`<div class="turno"><span>${ico(/pernocte|noche/i.test(x.turno)?'i-luna':'i-reloj')}${esc(x.turno)}</span><b>${gs(x.p)}</b></div>`).join('');
+  };
+  pintarTurnos();
+  if($('#tabs')) $('#tabs').onclick = e => {const b=e.target.closest('[data-hab]'); if(!b) return; hab=+b.dataset.hab;
+    document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on',t===b)); pintarTurnos();};
+  if(window.L){ const mm = miniMapa = L.map('mini-mapa',{zoomControl:false,dragging:false,scrollWheelZoom:false,doubleClickZoom:false,touchZoom:false,attributionControl:true}).setView([m.lat,m.lng],16);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19, attribution:'© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>'}).addTo(mm); mm.attributionControl.setPrefix(false);
+    L.marker([m.lat,m.lng],{icon:L.divIcon({html:`<span class="pin">${esc(m.nombre)}</span>`,iconSize:[0,0],className:''})}).addTo(mm);
+    $('#mini-mapa').onclick = e => { if(e.target.closest('a')) return; abrirLlegar(m); }; }
+  document.querySelectorAll('[data-llegar]').forEach(b => b.onclick = e => { e.preventDefault(); abrirLlegar(m); });
+  const g=$('#galeria'); if(g) g.onscroll=()=>{const i=Math.round(g.scrollLeft/g.clientWidth);document.querySelectorAll('#puntos i').forEach((p,j)=>p.classList.toggle('on',i===j));};
+  window.scrollTo(0,0); $('main').scrollTo?.(0,0);
+}
+function vistaPrivacidad(){
+  $('#vista').innerHTML = `<section class="simple entra texto-largo"><h1>Privacidad</h1>
+    <p><b>No tenés que crear una cuenta.</b> Para buscar moteles no te pedimos nombre, correo ni teléfono.</p>
+    <h2>Qué se guarda en tu celular</h2>
+    <p>Solo en este celular: tus favoritos, el modo claro u oscuro y la configuración del modo discreto (incluido tu PIN).</p>
+    <p>Lo podés borrar cuando quieras desde <b>Más → Borrar todos mis datos</b>. No guardamos nada tuyo en un servidor.</p>
+    <h2>Tu ubicación</h2>
+    <p>Si nos das permiso, la usamos en el momento para ordenar los moteles por cercanía. <b>No la guardamos ni la mandamos a ningún lado.</b> El mapa se dibuja con OpenStreetMap: para mostrarte la zona, sus servidores reciben qué parte del mapa estás viendo, como cualquier mapa en internet.</p>
+    <h2>Cuando salís de la app</h2>
+    <p>Si tocás <b>Llamar</b>, <b>WhatsApp</b>, <b>Google Maps</b>, <b>Waze</b>, <b>Uber</b> o <b>Bolt</b>, se abre esa app y vale su propia política de privacidad. A Uber y Bolt les pasamos la dirección del destino, no el nombre del motel. Si escribís por WhatsApp, el motel va a ver tu número, como con cualquier mensaje.</p>
+    <h2>Modo discreto</h2>
+    <p>Tapa la app con una pantalla del clima y, si querés, pide un PIN para volver. Sirve para que alguien que agarre tu celular no vea la app a primera vista, pero no es una caja fuerte: no reemplaza el bloqueo de tu celular.</p>
+    <h2>De dónde salen los datos de los moteles</h2>
+    <p>De fuentes públicas (OpenStreetMap y lo que cada motel publica) y de lo que nos pasan los propios moteles. Si sos dueño y algo está mal, escribinos y lo corregimos o lo sacamos.</p>
+    <p class="aviso-precios">Motel Cerca es un sistema de orbepy · Última actualización: 14/11/2026.</p>
+  </section>`;
+}
+function vistaAyuda(){
+  $('#vista').innerHTML = `<section class="simple entra texto-largo"><h1>Ayuda</h1>
+    <h2>Buscar</h2><p>Al abrir, si das permiso a la ubicación, te mostramos primero los más cercanos. Podés buscar por nombre o ciudad (no importan las tildes) y filtrar por hidromasaje, garaje, pileta o 24 horas.</p>
+    <h2>Llegar y contactar</h2><p>En la ficha de cada motel: <b>Cómo llegar</b> abre Google Maps, Waze, Uber o Bolt. <b>Llamar</b> y <b>WhatsApp</b> se ven fuertes cuando el motel cargó ese contacto; si están clarito, todavía no lo tiene.</p>
+    <h2>Modo discreto</h2><p>Tocá el ojo tachado (arriba) para tapar la app con el clima. Para volver, <b>mantené apretada la temperatura un segundo</b> (y poné tu PIN si lo configuraste). En Más podés hacer que se tape sola cada vez que salís.</p>
+    <h2>¿Olvidaste el PIN?</h2><p>Por seguridad no hay forma de saltearlo: hay que borrar los datos de la app (en el navegador, los datos del sitio).</p>
+  </section>`;
+}
+function vistaFavoritos(){
+  const l = MOTELES.filter(m=>favs.has(m.id));
+  $('#vista').innerHTML = `<section class="simple entra"><h1>Favoritos</h1>${l.length?`<div class="tarjetas">${l.map(tarjeta).join('')}</div>`:
+    `<div class="vacio">${ico('i-corazon')}<p>Tocá el corazón de un motel para tenerlo a mano.</p></div>`}</section>`;
+}
+function vistaMas(){
+  $('#vista').innerHTML = `<section class="simple entra"><h1>Más</h1>
+    <div class="bloque-mas"><h2>Apariencia</h2><small>Automático sigue el modo de tu celular.</small>
+      <div class="segmento"><button data-tema="auto">Automático</button><button data-tema="claro">Claro</button><button data-tema="oscuro">Oscuro</button></div></div>
+    <div class="bloque-mas"><h2>Modo discreto</h2><small>Tapá la app al instante con una pantalla del clima. Para volver, mantené apretada la temperatura 1 segundo${disc.pin?' y poné tu PIN':''}.</small>
+      <button class="btn-tapar" data-tapar>${ico('i-ojo-no')}Tapar la app ahora</button>
+      <button class="fila-op" id="sw-salir"><div>Taparla cuando salgo de la app<small>Al volver, aparece el clima</small></div><span class="interruptor ${disc.alSalir?'on':''}"></span></button>
+      <button class="fila-op" id="btn-pin"><div>${disc.pin?'Cambiar el PIN':'Poner un PIN'}<small>${disc.pin?'Se pide para volver a ver la app':'Opcional: pedí 4 números para destapar'}</small></div>${ico('i-escudo')}</button>
+      ${disc.pin?'<button class="fila-op" id="btn-sin-pin"><div>Sacar el PIN</div></button>':''}
+    </div>
+    <div class="lista-mas">
+      <button id="borrar-todo">${ico('i-basura')}<div>Borrar todos mis datos<small>Favoritos, PIN y preferencias de este celular</small></div></button>
+      <a href="#/privacidad">${ico('i-escudo')}<div>Privacidad<small>Qué guardamos y qué no</small></div></a>
+      <a href="#/ayuda">${ico('i-ayuda')}<div>Ayuda<small>Cómo buscar, llegar y usar el modo discreto</small></div></a>
+    </div>
+    <div class="duenos-card"><h2>¿Tenés un motel?</h2><p>Sumá tus habitaciones, fotos y precios, gratis. Escribinos por WhatsApp y cargamos tu ficha: la gente que busca cerca te encuentra y te escribe directo.</p><a class="btn-b" href="${ORBE_WA_SUMARSE}" target="_blank" rel="noopener">Quiero sumarme</a></div>
+  </section>`;
+  $('#sw-salir').onclick = () => { disc.alSalir = !disc.alSalir; guardarDisc(); $('#sw-salir .interruptor').classList.toggle('on', disc.alSalir); };
+  $('#btn-pin').onclick = abrirPinNuevo;
+  if($('#btn-sin-pin')) $('#btn-sin-pin').onclick = () => { disc.pin = null; guardarDisc(); vistaMas(); };
+  $('#borrar-todo').onclick = async () => { if(!confirm('¿Borrar todos tus datos de este celular? No se puede deshacer.')) return;
+    try{ Object.keys(localStorage).filter(k=>k.startsWith('mc-')).forEach(k=>localStorage.removeItem(k)); }catch(e){}
+    favs.clear(); disc = {alSalir:false, pin:null}; tema = 'auto'; aplicarTema(); vistaMas(); alert('Listo: borramos todos tus datos de este celular.'); };
+  aplicarTema();
+}
+
+/* ===== Tema: Automático / Claro / Oscuro ===== */
+let tema = guardado('tema') || 'auto';
+const mqOscuro = matchMedia('(prefers-color-scheme: dark)');
+const esOscuro = () => document.documentElement.classList.contains('oscuro');
+function aplicarTema(){
+  const osc = tema==='oscuro' || (tema==='auto' && mqOscuro.matches);
+  document.documentElement.classList.toggle('oscuro', osc);
+  const meta = document.querySelector('meta[name="theme-color"]'); if(meta) meta.content = osc ? '#171214' : '#842D43';
+  document.querySelectorAll('[data-tema-rapido]').forEach(b=>{ b.innerHTML = ico(osc?'i-sol':'i-luna'); b.setAttribute('aria-label', osc?'Pasar a modo claro':'Pasar a modo oscuro'); });
+  document.querySelectorAll('[data-tema]').forEach(b=>b.classList.toggle('on', b.dataset.tema===tema));
+}
+function ponerTema(t){ tema = t; guardado('tema', t); aplicarTema(); }
+mqOscuro.addEventListener('change', () => { if(tema==='auto') aplicarTema(); });
+
+/* ===== Modo discreto ===== */
+let disc = guardado('discreto') || {alSalir:false, pin:null};
+const hashPin = p => { let h = 2166136261; for(const c of 'mc'+p){ h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return (h>>>0).toString(36); }; // prototipo: en la app real va en el almacenamiento seguro del celular
+const tituloReal = document.title;
+let rutaAntesDeTapar = '';
+const ICONO_CLIMA = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='7' fill='%23F5B301'/%3E%3C/svg%3E";
+function tapar(){
+  if($('#tapa')) return;
+  guardado('tapada', true);
+  rutaAntesDeTapar = location.hash; if(location.hash && location.hash !== '#/') history.replaceState(null, '', '#/');
+  const ic = document.querySelector('link[rel="icon"]'); if(ic){ ic.dataset.real = ic.dataset.real || ic.href; ic.href = ICONO_CLIMA; }
+  document.querySelector('.app').inert = true; $('#hoja').inert = true; $('#velo').inert = true;
+  const t = document.createElement('div'); t.id = 'tapa';
+  t.innerHTML = `<div class="clima">
+    <div class="c-ciudad">Asunción</div>
+    <div class="c-temp" id="c-temp" tabindex="0" role="img" aria-label="Temperatura 31 grados">31°</div>
+    <div class="c-estado">Mayormente soleado</div>
+    <div class="c-mm">Máx. 34° · Mín. 23°</div>
+    <div class="c-horas">${[['Ahora',31],['15 h',32],['16 h',33],['17 h',32],['18 h',30],['19 h',28]].map(([h,g])=>`<div><small>${h}</small>${ico('i-sol')}<b>${g}°</b></div>`).join('')}</div>
+    <div class="c-dias">${[['Mañana',35,24],['Miércoles',33,22],['Jueves',29,21],['Viernes',31,22],['Sábado',34,23]].map(([d,a,b])=>`<div><span>${d}</span>${ico('i-sol')}<span>${b}°</span><i><em style="left:${(b-18)*4}%;right:${100-(a-18)*4}%"></em></i><span>${a}°</span></div>`).join('')}</div>
+  </div><div class="c-pin" id="c-pin"></div>`;
+  document.body.appendChild(t); document.title = 'Clima';
+  const meta = document.querySelector('meta[name="theme-color"]'); if(meta) meta.content = '#3B7DD8';
+  cerrarFiltros();
+  // para volver: mantener apretada la temperatura
+  let timer; const temp = $('#c-temp');
+  const soltar = () => clearTimeout(timer);
+  temp.addEventListener('pointerdown', () => { timer = setTimeout(pedirDestapar, 900); });
+  ['pointerup','pointerleave','pointercancel'].forEach(ev=>temp.addEventListener(ev, soltar));
+  temp.addEventListener('contextmenu', e=>e.preventDefault());
+  temp.addEventListener('keydown', e => { if((e.key==='Enter'||e.key===' ') && !e.repeat){ e.preventDefault(); timer = setTimeout(pedirDestapar, 900); } });
+  temp.addEventListener('keyup', soltar);
+  setTimeout(()=>temp.focus({preventScroll:true}), 50);
+}
+function destapar(){ $('#tapa')?.remove(); guardado('tapada', false); document.title = tituloReal; aplicarTema();
+  document.querySelector('.app').inert = false; $('#hoja').inert = false; $('#velo').inert = false;
+  const ic = document.querySelector('link[rel="icon"]'); if(ic && ic.dataset.real) ic.href = ic.dataset.real;
+  if(rutaAntesDeTapar && rutaAntesDeTapar !== location.hash){ location.hash = rutaAntesDeTapar; } rutaAntesDeTapar = ''; }
+function pedirDestapar(){
+  if(!disc.pin) return destapar();
+  let pin = '';
+  const caja = $('#c-pin'); caja.classList.add('abierto');
+  const pintar = (error) => { caja.innerHTML = `<div class="pin-dots ${error?'error':''}">${[0,1,2,3].map(i=>`<i class="${i<pin.length?'on':''}"></i>`).join('')}</div>
+    <div class="teclado">${[1,2,3,4,5,6,7,8,9,'',0,'⌫'].map(k=>k===''?'<span></span>':`<button data-k="${k}">${k}</button>`).join('')}</div>`; };
+  pintar(false);
+  caja.onclick = e => { const b = e.target.closest('[data-k]'); if(!b) return; const k = b.dataset.k;
+    if(k==='⌫') pin = pin.slice(0,-1); else if(pin.length<4) pin += k;
+    if(pin.length===4){ if(hashPin(pin)===disc.pin){ destapar(); return; } pin=''; pintar(true); if(navigator.vibrate) navigator.vibrate(120); return; }
+    pintar(false); };
+}
+document.addEventListener('visibilitychange', () => { if(document.hidden && disc.alSalir) tapar(); });
+document.addEventListener('keydown', e => { if(e.key!=='Escape' || $('#tapa')) return;
+  if($('#hoja').classList.contains('abierta')){ cerrarFiltros(); return; }
+  if(/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName||'')) return;
+  tapar(); });
+document.addEventListener('click', e => {
+  if(e.target.closest('[data-tapar]')){ e.preventDefault(); tapar(); }
+  const tr = e.target.closest('[data-tema-rapido]'); if(tr){ e.preventDefault(); ponerTema(esOscuro()?'claro':'oscuro'); }
+  const tm = e.target.closest('[data-tema]'); if(tm){ e.preventDefault(); ponerTema(tm.dataset.tema); }
+});
+function guardarDisc(){ guardado('discreto', disc); }
+function abrirPinNuevo(){
+  let pin = '', primero = null;
+  const pintar = (msj, error) => {
+    $('#hoja').innerHTML = `<div class="asa"></div><div class="form-op" style="text-align:center"><h2>${primero?'Repetí el PIN':'Elegí un PIN de 4 números'}</h2>
+      <p class="sub">${msj}</p><div class="pin-dots grande ${error?'error':''}">${[0,1,2,3].map(i=>`<i class="${i<pin.length?'on':''}"></i>`).join('')}</div>
+      <div class="teclado claro">${[1,2,3,4,5,6,7,8,9,'',0,'⌫'].map(k=>k===''?'<span></span>':`<button data-k="${k}">${k}</button>`).join('')}</div></div>`; };
+  pintar('Lo vas a pedir para volver a ver la app cuando esté tapada.', false);
+  $('#hoja').classList.add('abierta'); $('#velo').classList.add('abierta');
+  $('#hoja').onclick = e => { const b = e.target.closest('[data-k]'); if(!b) return; const k=b.dataset.k;
+    if(k==='⌫') pin = pin.slice(0,-1); else if(pin.length<4) pin += k;
+    if(pin.length<4) return pintar(primero?'Para confirmar.':'Lo vas a pedir para volver a ver la app cuando esté tapada.', false);
+    if(!primero){ primero = pin; pin=''; return pintar('Para confirmar.', false); }
+    if(pin===primero){ disc.pin = hashPin(pin); guardarDisc(); cerrarFiltros(); if(location.hash==='#/mas') vistaMas(); return; }
+    primero=null; pin=''; pintar('No coincidían. Probá de nuevo.', true); };
+}
+
+/* ===== Cómo llegar: Google Maps, Waze, Uber, Bolt ===== */
+function abrirLlegar(m){
+  const dir = `${m.dir}, ${m.zona}`;
+  const gmaps = `https://www.google.com/maps/dir/?api=1&destination=${m.lat},${m.lng}`;
+  const waze = `https://waze.com/ul?ll=${m.lat},${m.lng}&navigate=yes`;
+  // por discreción, a Uber le pasamos la dirección y no el nombre del motel
+  const uber = `https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[latitude]=${m.lat}&dropoff[longitude]=${m.lng}&dropoff[formatted_address]=${encodeURIComponent(dir)}`;
+  $('#hoja').innerHTML = `<div class="asa"></div><div class="form-op"><h2>¿Cómo querés llegar?</h2><p class="sub">${esc(dir)}</p>
+    <div class="llegar">
+      <a href="${gmaps}" target="_blank" rel="noopener"><span class="ll-ico">${ico('i-mapa')}</span><div><b>Google Maps</b><small>Manejando, en moto o caminando</small></div></a>
+      <a href="${waze}" target="_blank" rel="noopener"><span class="ll-ico">${ico('i-ruta')}</span><div><b>Waze</b><small>Te avisa del tránsito en el camino</small></div></a>
+      <a href="${uber}" target="_blank" rel="noopener"><span class="ll-ico">${ico('i-auto')}</span><div><b>Pedir un Uber</b><small>Con el destino ya puesto</small></div></a>
+      <button data-bolt><span class="ll-ico">${ico('i-auto')}</span><div><b>Pedir un Bolt</b><small>Te copiamos la dirección para pegarla en Bolt</small></div></button>
+    </div>
+    <p class="aviso-precios">${ico('i-escudo')} A Uber y Bolt les pasamos solo la dirección, no el nombre del motel. Igual, la app de viajes va a saber a qué dirección vas.</p></div>`;
+  $('#hoja').classList.add('abierta'); $('#velo').classList.add('abierta');
+  $('#hoja').onclick = async e => {
+    if(e.target.closest('[data-bolt]')){
+      let ok = false; try{ await navigator.clipboard.writeText(dir); ok = true; }catch(err){}
+      e.target.closest('[data-bolt]').querySelector('small').textContent = ok ? 'Dirección copiada: abrí Bolt y pegala como destino' : `No pudimos copiarla. Escribí en Bolt: ${dir}`;
+    }
+  };
+}
+
+/* ===== Filtros ===== */
+function abrirFiltros(){
+  $('#hoja').innerHTML = `<div class="asa"></div><h2>Filtros</h2>${MOTELES.some(m=>m.desde) ? `<p class="sub" style="color:var(--texto-2);margin:0 0 16px">Precio del turno más corto (solo moteles con precios cargados)</p>
+    <input type="range" class="rango" id="f-max" min="50000" max="600000" step="10000" value="${filtros.max}">
+    <div class="sec" style="margin-top:4px"><span>Hasta</span><b class="num" id="f-max-t">${gs(filtros.max)}</b></div>` : `<p class="sub" style="color:var(--texto-2);margin:0 0 6px">Todavía ningún motel cargó sus precios: cuando lo hagan vas a poder filtrar por precio.</p>`}
+    <p style="font-weight:700;margin:18px 0 10px">Que tenga</p>
+    <div class="chips">${Object.entries(COMOD).map(([k,[t,i]])=>`<button class="chip ${filtros.comod.has(k)?'on':''}" data-f="${k}">${ico(i)}${t}</button>`).join('')}</div>
+    <p style="font-weight:700;margin:18px 0 10px">Ordenar por</p>
+    <div class="chips">${[['cerca','Más cerca'],['precio','Más barato']].map(([k,t])=>`<button class="chip ${filtros.orden===k?'on':''}" data-o="${k}">${t}</button>`).join('')}</div>
+    <button class="btn-pri" id="aplicar" style="width:100%;justify-content:center;margin-top:22px">Ver moteles</button>
+    <button id="limpiar-f" style="width:100%;margin-top:12px;color:var(--texto-2);font-weight:600">Limpiar filtros</button>`;
+  $('#hoja').classList.add('abierta'); $('#velo').classList.add('abierta');
+  if($('#f-max')) $('#f-max').oninput = e => {filtros.max=+e.target.value; filtros.maxTocado=true; $('#f-max-t').textContent=gs(filtros.max);};
+  $('#hoja').onclick = e => {const c=e.target.closest('[data-f]'), o=e.target.closest('[data-o]');
+    if(c){filtros.comod.has(c.dataset.f)?filtros.comod.delete(c.dataset.f):filtros.comod.add(c.dataset.f); c.classList.toggle('on');}
+    if(o){filtros.orden=o.dataset.o; $('#hoja').querySelectorAll('[data-o]').forEach(x=>x.classList.toggle('on',x===o));}
+    if(e.target.closest('#aplicar')) cerrarFiltros();
+    if(e.target.closest('#limpiar-f')){ filtros.comod.clear(); filtros.max=600000; filtros.maxTocado=false; filtros.orden='cerca'; cerrarFiltros(); } };
+}
+let focoAntes = null;
+new MutationObserver(() => { const h = $('#hoja'); if(h.classList.contains('abierta') && !h.contains(document.activeElement)){ focoAntes = document.activeElement; setTimeout(()=>h.querySelector('button, a, input, textarea')?.focus({preventScroll:true}), 60); } }).observe(document.getElementById('hoja'), {attributes:true, attributeFilter:['class']});
+function cerrarFiltros(){
+  if(focoAntes && document.contains(focoAntes)) setTimeout(()=>focoAntes.focus({preventScroll:true}), 0); $('#hoja').classList.remove('abierta'); $('#velo').classList.remove('abierta'); if($('#tarjetas')) pintarLista(); }
+$('#velo').onclick = cerrarFiltros;
+
+/* ===== Eventos globales y rutas ===== */
+document.addEventListener('click', e => {
+  const f = e.target.closest('[data-fav]'); if(f){e.preventDefault(); e.stopPropagation(); toggleFav(f.dataset.fav); return;}
+  const c = e.target.closest('[data-chip]'); if(c){const k=c.dataset.chip; filtros.comod.has(k)?filtros.comod.delete(k):filtros.comod.add(k); pintarLista();}
+});
+document.addEventListener('click', e => {const d=e.target.closest('[data-demo]'); if(d){e.preventDefault(); alert(d.dataset.demo==='Llamar' ? 'En la app real llama al motel.' : 'En la app real abre el WhatsApp del motel con un mensaje listo.');}});
+document.addEventListener('click', e => { if(e.target.closest('[data-ubicar]')){ e.preventDefault(); usarUbicacion(); } });
+document.addEventListener('mouseover', e => {const c=e.target.closest('.card[data-id]'); if(c) marcar(c.dataset.id,true);});
+document.addEventListener('mouseout', e => {const c=e.target.closest('.card[data-id]'); if(c) marcar(c.dataset.id,false);});
+
+function render(){
+  const [, ruta, id] = (location.hash.replace(/^#/,'') || '/').split('/');
+  const nav = {'':'explorar', motel:'explorar', favoritos:'favoritos', mas:'mas', privacidad:'mas', ayuda:'mas'}[ruta||''] || 'explorar';
+  document.querySelectorAll('[data-nav]').forEach(a=>a.classList.toggle('on', a.dataset.nav===nav));
+  document.querySelector('.bottom').style.display = ruta==='motel' ? 'none' : '';
+  $('#hoja').classList.remove('abierta'); $('#velo').classList.remove('abierta'); try{ mapa && (mapa.stop(), mapa.remove()); }catch(e){} try{ miniMapa && miniMapa.remove(); }catch(e){} mapa = null; miniMapa = null; capaYo = null; window.scrollTo(0,0); document.querySelector('main').scrollTop = 0;
+  if(ruta==='motel') vistaMotel(id);
+  else if(ruta==='favoritos') vistaFavoritos();
+  else if(ruta==='mas') vistaMas();
+  else if(ruta==='privacidad') vistaPrivacidad();
+  else if(ruta==='ayuda') vistaAyuda();
+  else vistaExplorar();
+}
+addEventListener('hashchange', () => { render(); aplicarTema(); });
+aplicarTema(); if(guardado('tapada') || disc.alSalir) tapar(); $('#vista').innerHTML = '<div class="vacio" style="padding-top:30vh">Cargando moteles…</div>';
+cargarDatos().then(() => { render(); aplicarTema(); usarUbicacion(true); });
+</script>
+</body>
+</html>
