@@ -149,13 +149,17 @@ html.oscuro .leaflet-tile-pane{filter:invert(1) hue-rotate(180deg) saturate(.3) 
 .galeria{position:relative;display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;aspect-ratio:4/3;max-height:460px;background:#2a1418}
 .galeria::-webkit-scrollbar{display:none}
 .galeria img{flex:none;width:100%;height:100%;object-fit:cover;scroll-snap-align:start}
+.galeria img.rota{opacity:0}
 .galeria-wrap{position:relative}
 .galeria-wrap .volver{position:absolute;top:calc(env(safe-area-inset-top) + 12px);left:12px;z-index:2}
 .galeria-wrap .fav-g{position:absolute;top:calc(env(safe-area-inset-top) + 12px);right:12px;z-index:2;color:var(--burdeos)}
 .galeria-wrap .fav-g.on svg{fill:var(--burdeos)}
 .puntos{position:absolute;bottom:12px;left:0;right:0;display:flex;justify-content:center;gap:6px}
-.puntos i{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.5)}
-.puntos i.on{background:#fff;width:18px;border-radius:4px}
+.puntos button{width:8px;height:8px;padding:0;border:0;border-radius:50%;background:rgba(255,255,255,.55);background-clip:content-box;box-sizing:content-box;border:9px solid transparent;margin:-9px -3px;cursor:pointer;transition:width .2s}
+.puntos button.on{background:#fff;background-clip:content-box;width:20px;border-radius:13px}
+.gal-flecha{position:absolute;top:50%;transform:translateY(-50%);z-index:2;width:42px;height:42px;border-radius:50%;border:0;display:grid;place-items:center;background:rgba(255,255,255,.9);color:#2B2528;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer}
+.gal-flecha svg{width:20px;height:20px}.gal-flecha.izq{left:12px}.gal-flecha.der{right:12px}.gal-flecha.der svg{transform:rotate(180deg)}
+.gal-cuenta{position:absolute;bottom:12px;right:14px;z-index:2;font-size:12px;font-weight:700;color:#fff;background:rgba(0,0,0,.45);padding:3px 9px;border-radius:999px}
 .cuerpo{padding:20px 16px 0;position:relative}
 .cuerpo h1{font-size:28px;margin:0 0 6px;font-weight:700;line-height:1.1}
 .cuerpo .meta{font-size:14px}
@@ -224,12 +228,11 @@ html.oscuro .datos svg{color:#E78AA2}
 }
 
 .meta .cuantas{margin-left:-4px}
-/* ---------- barra de arriba, tema y discreto ---------- */
+/* ---------- barra de arriba y tema ---------- */
 .top-der{display:flex;align-items:center;gap:8px}
 .btn-icono.chico{width:40px;height:40px;border-radius:13px}
 .hola .ubic{margin-bottom:6px}
 @media (min-width:960px){.top{justify-content:flex-end}}
-.galeria-wrap .tapar-g{position:absolute;top:calc(env(safe-area-inset-top) + 12px);right:64px;z-index:2}
 html.oscuro .acciones.tres .acc.contacto svg{color:#fff}
 html.oscuro .acciones.tres .acc.apagado svg{color:var(--texto-2)}
 .segmento{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:4px;border-radius:14px;background:var(--fondo);border:1px solid var(--linea);margin-top:10px}
@@ -238,41 +241,6 @@ html.oscuro .acciones.tres .acc.apagado svg{color:var(--texto-2)}
 .bloque-mas{background:var(--superficie);border-radius:var(--radio);box-shadow:var(--sombra);padding:16px;margin-bottom:14px}
 .bloque-mas h2{font-size:16px;margin:0 0 2px}
 .bloque-mas > small{color:var(--texto-2);font-size:13px;line-height:1.4;display:block}
-.fila-op{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 0;border-top:1px solid var(--linea);margin-top:12px;font-weight:600;font-size:14.5px;width:100%;text-align:left}
-.fila-op small{display:block;font-weight:400;color:var(--texto-2);font-size:12.5px;margin-top:2px}
-.fila-op + .fila-op{margin-top:0}
-.interruptor{width:46px;height:28px;border-radius:999px;background:var(--linea);position:relative;flex:none;transition:.2s}
-.interruptor::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:.2s}
-.interruptor.on{background:var(--burdeos)}
-.interruptor.on::after{left:21px}
-.btn-tapar{width:100%;height:48px;margin-top:12px;border-radius:14px;background:var(--texto);color:var(--fondo);font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px}
-/* pantalla de tapa (clima) */
-#tapa{position:fixed;inset:0;z-index:100;background:linear-gradient(180deg,#3B7DD8 0%,#6FA8EE 55%,#A9CBF5 100%);color:#fff;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;overflow:auto;-webkit-user-select:none;user-select:none}
-.clima{max-width:440px;margin:0 auto;padding:calc(env(safe-area-inset-top) + 48px) 20px 40px;text-align:center}
-.c-ciudad{font-size:28px;font-weight:500}
-.c-temp{font-size:96px;font-weight:200;line-height:1;margin:6px 0;cursor:default;touch-action:none}
-.c-estado{font-size:19px;font-weight:500;opacity:.95}
-.c-mm{font-size:16px;opacity:.9;margin-top:4px}
-.c-horas{display:flex;justify-content:space-between;margin-top:34px;padding:14px 12px;border-radius:18px;background:rgba(255,255,255,.18)}
-.c-horas div{display:flex;flex-direction:column;align-items:center;gap:8px;font-size:14px}
-.c-horas small{opacity:.9;font-size:13px}
-.c-horas svg,.c-dias svg{width:22px;height:22px;color:#FFE27A}
-.c-dias{margin-top:14px;padding:6px 14px;border-radius:18px;background:rgba(255,255,255,.18);text-align:left}
-.c-dias div{display:grid;grid-template-columns:1fr 26px 32px 1fr 32px;align-items:center;gap:8px;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.2);font-size:15px}
-.c-dias div:last-child{border-bottom:0}
-.c-dias i{height:5px;border-radius:3px;background:rgba(255,255,255,.3);position:relative;display:block}
-.c-dias em{position:absolute;top:0;bottom:0;border-radius:3px;background:linear-gradient(90deg,#FFE27A,#FFB347)}
-.c-pin{position:fixed;left:0;right:0;bottom:0;background:rgba(20,40,80,.55);backdrop-filter:blur(14px);padding:22px 20px calc(env(safe-area-inset-bottom) + 22px);transform:translateY(100%);transition:transform .25s}
-.c-pin.abierto{transform:none}
-.pin-dots{display:flex;justify-content:center;gap:14px;margin:0 0 18px}
-.pin-dots i{width:13px;height:13px;border-radius:50%;border:2px solid currentColor;opacity:.9}
-.pin-dots i.on{background:currentColor}
-.pin-dots.error{animation:temblar .35s}
-.pin-dots.grande{margin:18px 0 22px}.pin-dots.grande i{width:16px;height:16px;color:var(--burdeos)}
-@keyframes temblar{20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
-.teclado{display:grid;grid-template-columns:repeat(3,72px);justify-content:center;gap:12px}
-.teclado button{height:60px;border-radius:50%;font-size:24px;font-weight:500;background:rgba(255,255,255,.18);color:#fff}
-.teclado.claro button{background:var(--fondo);color:var(--texto);border:1px solid var(--linea)}
 /* hoja de cómo llegar */
 .llegar{display:grid;gap:10px;margin-top:4px}
 .llegar a,.llegar button{display:flex;align-items:center;gap:14px;padding:14px;border-radius:16px;border:1px solid var(--linea);background:var(--superficie);text-align:left;width:100%}
@@ -369,7 +337,6 @@ if(osc)document.documentElement.classList.add('oscuro');})();
   <symbol id="i-tel" viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></symbol>
   <symbol id="i-pago" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h3"/></symbol>
   <symbol id="i-sol" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/></symbol>
-  <symbol id="i-ojo-no" viewBox="0 0 24 24"><path d="M3 3l18 18M10.6 6.1A9.8 9.8 0 0 1 12 6c5 0 8.5 4.2 9.5 6-.5.9-1.6 2.4-3.1 3.7M6.3 7.6C4.5 8.9 3.1 10.7 2.5 12c1 1.8 4.5 6 9.5 6 1.6 0 3-.4 4.3-1M9.9 9.9a3 3 0 0 0 4.2 4.2"/></symbol>
   <symbol id="i-auto" viewBox="0 0 24 24"><path d="M5 16h14v-4l-2-5H7l-2 5zM3 12h18"/><circle cx="7.5" cy="16.5" r="1.8"/><circle cx="16.5" cy="16.5" r="1.8"/></symbol>
   <symbol id="i-ayuda" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .8-1 1.5V14M12 17.5h.01"/></symbol>
 </svg>
@@ -394,7 +361,7 @@ if(osc)document.documentElement.classList.add('oscuro');})();
 </div>
 
 <div class="velo" id="velo"></div>
-<div class="hoja" id="hoja" role="dialog" aria-modal="true" aria-label="Opciones"></div>
+<div class="hoja" id="hoja" role="dialog" aria-modal="true" aria-label="Opciones" inert></div>
 
 <script src="config.js"></script>
 <script src="vendor/supabase-2.45.4.js"></script>
@@ -417,7 +384,7 @@ const esc = t => String(t ?? '').replace(/[<>&"]/g, c => ({'<':'&lt;','>':'&gt;'
 function dist(a,b){const R=6371,r=x=>x*Math.PI/180;const d=Math.acos(Math.max(-1,Math.min(1,Math.sin(r(a.lat))*Math.sin(r(b.lat))+Math.cos(r(a.lat))*Math.cos(r(b.lat))*Math.cos(r(b.lng-a.lng)))))*R;return d*1.3;} // x1.3 = calle, no línea recta
 const waLindo = w => { const d = String(w).replace(/\D/g,'').replace(/^595/,'0'); return d.length===10 ? `${d.slice(0,4)} ${d.slice(4,7)} ${d.slice(7)}` : d; };
 const telLink = t => { const d = String(t).replace(/\D/g,''); return d.startsWith('595') ? '+' + d : '+595' + d.replace(/^0/,''); };
-const fechaCorta = f => { if(!f) return ''; const d = new Date(f); return isNaN(d) ? f : d.toLocaleDateString('es-PY',{month:'short', year:'numeric'}); };
+const fechaCorta = f => { if(!f) return ''; const x = String(f).match(/^(\d{4})-(\d{2})(?:-(\d{2}))?/); if(!x) return esc(f); return esc(new Date(+x[1], +x[2]-1, +(x[3]||1)).toLocaleDateString('es-PY',{month:'short', year:'numeric'})); };
 const urlSegura = u => { try{ const x = new URL(String(u)); return /^https?:$/.test(x.protocol) ? x.href : null; }catch(e){ return null; } };
 const sinTildes = t => String(t||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
 function prepararMotel(m){
@@ -433,11 +400,13 @@ function prepararMotel(m){
   m.comod = (m.comod||[]).filter(c=>COMOD[c]);
   const grupos = Object.create(null);
   (m.precios||[]).filter(x=>x.precio_gs).forEach(x=>{ const h = x.habitacion || 'Habitación'; (grupos[h] ||= []).push({turno:x.turno||'Turno', p:+x.precio_gs}); });
-  m.hab = Object.entries(grupos).map(([t,lista])=>({t, turnos:lista.sort((a,b)=>{const ia=TURNOS_ORDEN.indexOf(a.turno), ib=TURNOS_ORDEN.indexOf(b.turno); return (ia<0?9:ia)-(ib<0?9:ib) || a.p-b.p;})}));
+  const rango = t => { t = String(t).toLowerCase(); if(/adicional/.test(t)) return 900; if(/pernocte|dormida|noche/.test(t)) return 800; const h = t.match(/(\d+)\s*h/); const mi = t.match(/(\d+)\s*min/); return h ? (+h[1]*60 + (mi ? +mi[1] : 0)) : (mi ? +mi[1] : 500); };
+  m.hab = Object.entries(grupos).map(([t,lista])=>({t, turnos:lista.sort((a,b)=> rango(a.turno)-rango(b.turno) || a.p-b.p)}));
   const todos = m.hab.flatMap(h=>h.turnos);
-  const cortos = todos.filter(x=>/^2\s*(h|hs|horas?)$/i.test(x.turno.trim()));
-  m.desde = (cortos.length ? Math.min(...cortos.map(x=>x.p)) : todos.length ? Math.min(...todos.map(x=>x.p)) : null);
-  m.desdeTxt = cortos.length ? '2 horas desde' : 'Desde';
+  const turnos = todos.filter(x=>!/adicional|pernocte|dormida|noche/i.test(x.turno));  // el "desde" es el turno más barato, no el adicional
+  const base = turnos.length ? turnos : todos.filter(x=>!/adicional/i.test(x.turno));
+  m.desde = base.length ? Math.min(...base.map(x=>x.p)) : null;
+  m.desdeTxt = turnos.length ? 'Desde' : 'Pernocte desde';
 }
 function calcularDistancias(){ MOTELES.forEach(m=>{ m.km = dist(YO,m); m.min = Math.max(3, Math.round(m.km/0.45)); }); }
 // Contacto de los dueños: WhatsApp de Orbe (decisión de José, 14/11/2026). El panel duenos.html queda para cuando haya base.
@@ -519,7 +488,7 @@ function toggleFav(id){ favs.has(id)?favs.delete(id):favs.add(id); guardado('fav
 function tarjeta(m){
   return `<a class="card" href="#/motel/${esc(m.id)}" data-id="${esc(m.id)}">
     <div class="foto">${m.fotos.length ? foto(m.fotos[0], m.nombre) : sinFoto(m)}
-      <button class="fav ${favs.has(m.id)?'on':''}" data-fav="${m.id}" aria-label="Guardar">${ico('i-corazon')}</button></div>
+      <button class="fav ${favs.has(m.id)?'on':''}" data-fav="${m.id}" aria-label="Guardar" aria-pressed="${favs.has(m.id)}">${ico('i-corazon')}</button></div>
     <div class="info">
       <h3>${esc(m.nombre)}</h3>
       ${ubicado?`<div class="meta"><span>${m.km.toFixed(1).replace('.',',')} km · ${m.min} min</span></div>`:''}
@@ -542,16 +511,16 @@ let mapa, capas = {}, capaYo = null, miniMapa = null;
 function vistaExplorar(){
   $('#vista').innerHTML = `
     <header class="top"><img class="logo-mov logo-claro" src="marca/logo-horizontal-claro.svg" alt="Motel Cerca"><img class="logo-mov logo-oscuro" src="marca/logo-horizontal-oscuro.svg" alt="Motel Cerca">
-      <div class="top-der"><button class="btn-icono chico" data-tema-rapido aria-label="Cambiar tema"></button><button class="btn-icono chico" data-tapar aria-label="Tapar la app" title="Tapar la app">${ico('i-ojo-no')}</button></div></header>
+      <div class="top-der"><button class="btn-icono chico" data-tema-rapido aria-label="Cambiar tema"></button></div></header>
     <section class="explorar" id="explorar">
       <div class="lista">
-        <div class="hola entra"><button class="ubic" id="ubic" data-ubicar>${ico('i-pin')}${ubicado?(lejos?'Estás lejos de Gran Asunción':`Cerca de vos${zonaCercana?' · '+zonaCercana:''}`):'Gran Asunción · usar mi ubicación'}</button><h1>Moteles <em>cerca</em><br>de vos</h1><p>Encontrá el más cercano, mirá sus datos y escribile directo.</p></div>
-        <label class="buscador">${ico('i-buscar')}<input id="q" placeholder="Buscá por nombre o ciudad" autocomplete="off">
+        <div class="hola entra"><button class="ubic" id="ubic" data-ubicar>${ico('i-pin')}${ubicado?(lejos?'Estás lejos de Gran Asunción':`Cerca de vos${zonaCercana?' · '+esc(zonaCercana):''}`):'Gran Asunción · usar mi ubicación'}</button><h1>Moteles <em>cerca</em><br>de vos</h1><p>Encontrá el más cercano, mirá sus datos y escribile directo.</p></div>
+        <label class="buscador">${ico('i-buscar')}<input id="q" placeholder="Buscá por nombre o ciudad" aria-label="Buscar motel por nombre o ciudad" autocomplete="off">
           <button class="btn-filtro" id="abrir-filtros">${ico('i-filtro')}Filtros</button></label>
         <div class="chips" id="chips">${chipsHTML()}</div>
         <div class="sec"><h2>${ubicado&&!lejos?'Más cerca de vos':'Moteles en Gran Asunción'}</h2><span id="cuenta"></span></div>
         ${ubicado&&lejos?`<div class="nota" style="margin-bottom:12px">${ico('i-pin')}<div>Por ahora solo tenemos moteles de Gran Asunción. Te los mostramos ordenados por distancia.</div></div>`:''}<div class="tarjetas" id="tarjetas"></div>
-        <nav class="por-ciudad" aria-label="Moteles por ciudad"><b>Moteles por ciudad</b>${[...new Set(MOTELES.map(m=>m.zona))].sort().map(c=>`<a href="moteles/${sinTildes(c).replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')}/">${esc(c)}</a>`).join('')}</nav>
+        <nav class="por-ciudad" aria-label="Moteles por ciudad"><b>Moteles por ciudad</b>${[...new Set(MOTELES.filter(m=>m.verificado!==false).map(m=>m.zona))].sort().map(c=>`<a href="moteles/${sinTildes(c).replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')}/">${esc(c)}</a>`).join('')}</nav>
         <p class="aviso-demo">Datos públicos en verificación${DATOS_FECHA?` · actualizado ${fechaCorta(DATOS_FECHA)}`:""}. ¿Sos dueño de un motel? Escribinos para corregir tu ficha.</p>
       </div>
       <div class="mapa-wrap"><div id="mapa"></div></div>
@@ -595,7 +564,7 @@ function marcar(id,on){document.querySelector(`.card[data-id="${id}"]`)?.classLi
   const el=capas[id]?.getElement()?.querySelector('.pin'); if(el) el.classList.toggle('sel',on);}
 
 function vistaMotel(id){
-  const m = MOTELES.find(x=>x.id===id); if(!m) return vistaExplorar();
+  const m = MOTELES.find(x=>x.id===id); if(!m){ location.replace('#/'); return; }
   let hab = 0;
   const waTxt = encodeURIComponent('Hola, los encontré en Motel Cerca. ¿Me pasan los precios y las habitaciones?');
   const waUrl = m.wa ? `https://wa.me/${String(m.wa).replace(/\D/g,'')}?text=${waTxt}` : '';
@@ -604,10 +573,11 @@ function vistaMotel(id){
     <article class="ficha entra">
       <div class="galeria-wrap">
         <a class="btn-icono volver" href="#/" aria-label="Volver">${ico('i-volver')}</a>
-        <button class="btn-icono tapar-g" data-tapar aria-label="Tapar la app">${ico('i-ojo-no')}</button>
-        <button class="btn-icono fav-g ${favs.has(m.id)?'on':''}" data-fav="${m.id}" aria-label="Guardar">${ico('i-corazon')}</button>
-        ${m.fotos.length ? `<div class="galeria" id="galeria">${m.fotos.map(f=>foto(f,m.nombre)).join('')}</div>
-        <div class="puntos" id="puntos">${m.fotos.map((_,i)=>`<i class="${i?'':'on'}"></i>`).join('')}</div>` : sinFoto(m, true)}
+        <button class="btn-icono fav-g ${favs.has(m.id)?'on':''}" data-fav="${m.id}" aria-label="Guardar" aria-pressed="${favs.has(m.id)}">${ico('i-corazon')}</button>
+        ${m.fotos.length ? `<div class="galeria" id="galeria">${m.fotos.map(f=>`<img src="${esc(f)}" alt="${esc(m.nombre)}" loading="lazy" onerror="this.classList.add('rota')">`).join('')}</div>
+        ${m.fotos.length>1 ? `<button class="gal-flecha izq" data-gal="-1" aria-label="Foto anterior">${ico('i-volver')}</button><button class="gal-flecha der" data-gal="1" aria-label="Foto siguiente">${ico('i-volver')}</button>
+        <div class="gal-cuenta" id="gal-cuenta">1 / ${m.fotos.length}</div>` : ''}
+        <div class="puntos" id="puntos">${m.fotos.map((_,i)=>`<button class="${i?'':'on'}" data-punto="${i}" aria-label="Foto ${i+1}"></button>`).join('')}</div>` : sinFoto(m, true)}
       </div>
       <div class="ficha-grid"><div class="cuerpo">
         <h1>${esc(m.nombre)}</h1>
@@ -659,21 +629,31 @@ function vistaMotel(id){
     L.marker([m.lat,m.lng],{icon:L.divIcon({html:`<span class="pin">${esc(m.nombre)}</span>`,iconSize:[0,0],className:''})}).addTo(mm);
     $('#mini-mapa').onclick = e => { if(e.target.closest('a')) return; abrirLlegar(m); }; }
   document.querySelectorAll('[data-llegar]').forEach(b => b.onclick = e => { e.preventDefault(); abrirLlegar(m); });
-  const g=$('#galeria'); if(g) g.onscroll=()=>{const i=Math.round(g.scrollLeft/g.clientWidth);document.querySelectorAll('#puntos i').forEach((p,j)=>p.classList.toggle('on',i===j));};
+  const g=$('#galeria');
+  if(g){
+    const n = g.children.length, ir = i => { i = (i + n) % n; g.scrollTo({left: g.children[i].offsetLeft - g.children[0].offsetLeft, behavior: 'smooth'}); };
+    const actual = () => Math.round(g.scrollLeft / (g.children[0].getBoundingClientRect().width || g.clientWidth));
+    g.onscroll = () => { const i = actual(); document.querySelectorAll('#puntos button').forEach((p,j)=>p.classList.toggle('on', i===j)); const c=$('#gal-cuenta'); if(c) c.textContent = `${i+1} / ${n}`; };
+    document.querySelectorAll('[data-gal]').forEach(b => b.onclick = () => { parar(); ir(actual() + (+b.dataset.gal)); });
+    document.querySelectorAll('[data-punto]').forEach(b => b.onclick = () => { parar(); ir(+b.dataset.punto); });
+    // avanza sola cada 4 s hasta que la persona toque algo
+    let auto = n > 1 ? setInterval(() => { if(!document.body.contains(g)) return parar(); ir(actual() + 1); }, 4000) : null;
+    function parar(){ if(auto){ clearInterval(auto); auto = null; } }
+    limpiarVista = parar;
+    ['pointerdown','touchstart','wheel'].forEach(ev => g.addEventListener(ev, parar, {passive:true}));
+  }
   window.scrollTo(0,0); $('main').scrollTo?.(0,0);
 }
 function vistaPrivacidad(){
   $('#vista').innerHTML = `<section class="simple entra texto-largo"><h1>Privacidad</h1>
     <p><b>No tenés que crear una cuenta.</b> Para buscar moteles no te pedimos nombre, correo ni teléfono.</p>
     <h2>Qué se guarda en tu celular</h2>
-    <p>Solo en este celular: tus favoritos, el modo claro u oscuro y la configuración del modo discreto (incluido tu PIN).</p>
+    <p>Solo en este celular: tus favoritos y el modo claro u oscuro.</p>
     <p>Lo podés borrar cuando quieras desde <b>Más → Borrar todos mis datos</b>. No guardamos nada tuyo en un servidor.</p>
     <h2>Tu ubicación</h2>
     <p>Si nos das permiso, la usamos en el momento para ordenar los moteles por cercanía. <b>No la guardamos ni la mandamos a ningún lado.</b> El mapa se dibuja con OpenStreetMap: para mostrarte la zona, sus servidores reciben qué parte del mapa estás viendo, como cualquier mapa en internet.</p>
     <h2>Cuando salís de la app</h2>
     <p>Si tocás <b>Llamar</b>, <b>WhatsApp</b>, <b>Google Maps</b>, <b>Waze</b>, <b>Uber</b> o <b>Bolt</b>, se abre esa app y vale su propia política de privacidad. A Uber y Bolt les pasamos la dirección del destino, no el nombre del motel. Si escribís por WhatsApp, el motel va a ver tu número, como con cualquier mensaje.</p>
-    <h2>Modo discreto</h2>
-    <p>Tapa la app con una pantalla del clima y, si querés, pide un PIN para volver. Sirve para que alguien que agarre tu celular no vea la app a primera vista, pero no es una caja fuerte: no reemplaza el bloqueo de tu celular.</p>
     <h2>De dónde salen los datos de los moteles</h2>
     <p>De fuentes públicas (OpenStreetMap y lo que cada motel publica) y de lo que nos pasan los propios moteles. Si sos dueño y algo está mal, escribinos y lo corregimos o lo sacamos.</p>
     <p class="aviso-precios">Motel Cerca es un sistema de orbepy · Última actualización: 14/11/2026.</p>
@@ -683,8 +663,6 @@ function vistaAyuda(){
   $('#vista').innerHTML = `<section class="simple entra texto-largo"><h1>Ayuda</h1>
     <h2>Buscar</h2><p>Al abrir, si das permiso a la ubicación, te mostramos primero los más cercanos. Podés buscar por nombre o ciudad (no importan las tildes) y filtrar por hidromasaje, garaje, pileta o 24 horas.</p>
     <h2>Llegar y contactar</h2><p>En la ficha de cada motel: <b>Cómo llegar</b> abre Google Maps, Waze, Uber o Bolt. <b>Llamar</b> y <b>WhatsApp</b> se ven fuertes cuando el motel cargó ese contacto; si están clarito, todavía no lo tiene.</p>
-    <h2>Modo discreto</h2><p>Tocá el ojo tachado (arriba) para tapar la app con el clima. Para volver, <b>mantené apretada la temperatura un segundo</b> (y poné tu PIN si lo configuraste). En Más podés hacer que se tape sola cada vez que salís.</p>
-    <h2>¿Olvidaste el PIN?</h2><p>Por seguridad no hay forma de saltearlo: hay que borrar los datos de la app (en el navegador, los datos del sitio).</p>
   </section>`;
 }
 function vistaFavoritos(){
@@ -696,25 +674,16 @@ function vistaMas(){
   $('#vista').innerHTML = `<section class="simple entra"><h1>Más</h1>
     <div class="bloque-mas"><h2>Apariencia</h2><small>Automático sigue el modo de tu celular.</small>
       <div class="segmento"><button data-tema="auto">Automático</button><button data-tema="claro">Claro</button><button data-tema="oscuro">Oscuro</button></div></div>
-    <div class="bloque-mas"><h2>Modo discreto</h2><small>Tapá la app al instante con una pantalla del clima. Para volver, mantené apretada la temperatura 1 segundo${disc.pin?' y poné tu PIN':''}.</small>
-      <button class="btn-tapar" data-tapar>${ico('i-ojo-no')}Tapar la app ahora</button>
-      <button class="fila-op" id="sw-salir"><div>Taparla cuando salgo de la app<small>Al volver, aparece el clima</small></div><span class="interruptor ${disc.alSalir?'on':''}"></span></button>
-      <button class="fila-op" id="btn-pin"><div>${disc.pin?'Cambiar el PIN':'Poner un PIN'}<small>${disc.pin?'Se pide para volver a ver la app':'Opcional: pedí 4 números para destapar'}</small></div>${ico('i-escudo')}</button>
-      ${disc.pin?'<button class="fila-op" id="btn-sin-pin"><div>Sacar el PIN</div></button>':''}
-    </div>
     <div class="lista-mas">
-      <button id="borrar-todo">${ico('i-basura')}<div>Borrar todos mis datos<small>Favoritos, PIN y preferencias de este celular</small></div></button>
+      <button id="borrar-todo">${ico('i-basura')}<div>Borrar todos mis datos<small>Favoritos y preferencias de este celular</small></div></button>
       <a href="#/privacidad">${ico('i-escudo')}<div>Privacidad<small>Qué guardamos y qué no</small></div></a>
-      <a href="#/ayuda">${ico('i-ayuda')}<div>Ayuda<small>Cómo buscar, llegar y usar el modo discreto</small></div></a>
+      <a href="#/ayuda">${ico('i-ayuda')}<div>Ayuda<small>Cómo buscar, llegar y contactar</small></div></a>
     </div>
     <div class="duenos-card"><h2>¿Tenés un motel?</h2><p>Sumá tus habitaciones, fotos y precios, gratis. Escribinos por WhatsApp y cargamos tu ficha: la gente que busca cerca te encuentra y te escribe directo.</p><a class="btn-b" href="${ORBE_WA_SUMARSE}" target="_blank" rel="noopener">Quiero sumarme</a></div>
   </section>`;
-  $('#sw-salir').onclick = () => { disc.alSalir = !disc.alSalir; guardarDisc(); $('#sw-salir .interruptor').classList.toggle('on', disc.alSalir); };
-  $('#btn-pin').onclick = abrirPinNuevo;
-  if($('#btn-sin-pin')) $('#btn-sin-pin').onclick = () => { disc.pin = null; guardarDisc(); vistaMas(); };
   $('#borrar-todo').onclick = async () => { if(!confirm('¿Borrar todos tus datos de este celular? No se puede deshacer.')) return;
     try{ Object.keys(localStorage).filter(k=>k.startsWith('mc-')).forEach(k=>localStorage.removeItem(k)); }catch(e){}
-    favs.clear(); disc = {alSalir:false, pin:null}; tema = 'auto'; aplicarTema(); vistaMas(); alert('Listo: borramos todos tus datos de este celular.'); };
+    favs.clear(); tema = 'auto'; aplicarTema(); vistaMas(); alert('Listo: borramos todos tus datos de este celular.'); };
   aplicarTema();
 }
 
@@ -732,82 +701,13 @@ function aplicarTema(){
 function ponerTema(t){ tema = t; guardado('tema', t); aplicarTema(); }
 mqOscuro.addEventListener('change', () => { if(tema==='auto') aplicarTema(); });
 
-/* ===== Modo discreto ===== */
-let disc = guardado('discreto') || {alSalir:false, pin:null};
-const hashPin = p => { let h = 2166136261; for(const c of 'mc'+p){ h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return (h>>>0).toString(36); }; // prototipo: en la app real va en el almacenamiento seguro del celular
-const tituloReal = document.title;
-let rutaAntesDeTapar = '';
-const ICONO_CLIMA = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='7' fill='%23F5B301'/%3E%3C/svg%3E";
-function tapar(){
-  if($('#tapa')) return;
-  guardado('tapada', true);
-  rutaAntesDeTapar = location.hash; if(location.hash && location.hash !== '#/') history.replaceState(null, '', '#/');
-  const ic = document.querySelector('link[rel="icon"]'); if(ic){ ic.dataset.real = ic.dataset.real || ic.href; ic.href = ICONO_CLIMA; }
-  document.querySelector('.app').inert = true; $('#hoja').inert = true; $('#velo').inert = true;
-  const t = document.createElement('div'); t.id = 'tapa';
-  t.innerHTML = `<div class="clima">
-    <div class="c-ciudad">Asunción</div>
-    <div class="c-temp" id="c-temp" tabindex="0" role="img" aria-label="Temperatura 31 grados">31°</div>
-    <div class="c-estado">Mayormente soleado</div>
-    <div class="c-mm">Máx. 34° · Mín. 23°</div>
-    <div class="c-horas">${[['Ahora',31],['15 h',32],['16 h',33],['17 h',32],['18 h',30],['19 h',28]].map(([h,g])=>`<div><small>${h}</small>${ico('i-sol')}<b>${g}°</b></div>`).join('')}</div>
-    <div class="c-dias">${[['Mañana',35,24],['Miércoles',33,22],['Jueves',29,21],['Viernes',31,22],['Sábado',34,23]].map(([d,a,b])=>`<div><span>${d}</span>${ico('i-sol')}<span>${b}°</span><i><em style="left:${(b-18)*4}%;right:${100-(a-18)*4}%"></em></i><span>${a}°</span></div>`).join('')}</div>
-  </div><div class="c-pin" id="c-pin"></div>`;
-  document.body.appendChild(t); document.title = 'Clima';
-  const meta = document.querySelector('meta[name="theme-color"]'); if(meta) meta.content = '#3B7DD8';
-  cerrarFiltros();
-  // para volver: mantener apretada la temperatura
-  let timer; const temp = $('#c-temp');
-  const soltar = () => clearTimeout(timer);
-  temp.addEventListener('pointerdown', () => { timer = setTimeout(pedirDestapar, 900); });
-  ['pointerup','pointerleave','pointercancel'].forEach(ev=>temp.addEventListener(ev, soltar));
-  temp.addEventListener('contextmenu', e=>e.preventDefault());
-  temp.addEventListener('keydown', e => { if((e.key==='Enter'||e.key===' ') && !e.repeat){ e.preventDefault(); timer = setTimeout(pedirDestapar, 900); } });
-  temp.addEventListener('keyup', soltar);
-  setTimeout(()=>temp.focus({preventScroll:true}), 50);
-}
-function destapar(){ $('#tapa')?.remove(); guardado('tapada', false); document.title = tituloReal; aplicarTema();
-  document.querySelector('.app').inert = false; $('#hoja').inert = false; $('#velo').inert = false;
-  const ic = document.querySelector('link[rel="icon"]'); if(ic && ic.dataset.real) ic.href = ic.dataset.real;
-  if(rutaAntesDeTapar && rutaAntesDeTapar !== location.hash){ location.hash = rutaAntesDeTapar; } rutaAntesDeTapar = ''; }
-function pedirDestapar(){
-  if(!disc.pin) return destapar();
-  let pin = '';
-  const caja = $('#c-pin'); caja.classList.add('abierto');
-  const pintar = (error) => { caja.innerHTML = `<div class="pin-dots ${error?'error':''}">${[0,1,2,3].map(i=>`<i class="${i<pin.length?'on':''}"></i>`).join('')}</div>
-    <div class="teclado">${[1,2,3,4,5,6,7,8,9,'',0,'⌫'].map(k=>k===''?'<span></span>':`<button data-k="${k}">${k}</button>`).join('')}</div>`; };
-  pintar(false);
-  caja.onclick = e => { const b = e.target.closest('[data-k]'); if(!b) return; const k = b.dataset.k;
-    if(k==='⌫') pin = pin.slice(0,-1); else if(pin.length<4) pin += k;
-    if(pin.length===4){ if(hashPin(pin)===disc.pin){ destapar(); return; } pin=''; pintar(true); if(navigator.vibrate) navigator.vibrate(120); return; }
-    pintar(false); };
-}
-document.addEventListener('visibilitychange', () => { if(document.hidden && disc.alSalir) tapar(); });
-document.addEventListener('keydown', e => { if(e.key!=='Escape' || $('#tapa')) return;
-  if($('#hoja').classList.contains('abierta')){ cerrarFiltros(); return; }
-  if(/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName||'')) return;
-  tapar(); });
+/* ===== Atajos (el modo discreto se sacó el 14/11 por pedido de José) ===== */
+try{ ['mc-tapada','mc-discreto'].forEach(k=>localStorage.removeItem(k)); }catch(e){}  // limpia lo que guardó la versión anterior
+document.addEventListener('keydown', e => { if(e.key==='Escape' && $('#hoja').classList.contains('abierta')) cerrarFiltros(); });
 document.addEventListener('click', e => {
-  if(e.target.closest('[data-tapar]')){ e.preventDefault(); tapar(); }
   const tr = e.target.closest('[data-tema-rapido]'); if(tr){ e.preventDefault(); ponerTema(esOscuro()?'claro':'oscuro'); }
   const tm = e.target.closest('[data-tema]'); if(tm){ e.preventDefault(); ponerTema(tm.dataset.tema); }
 });
-function guardarDisc(){ guardado('discreto', disc); }
-function abrirPinNuevo(){
-  let pin = '', primero = null;
-  const pintar = (msj, error) => {
-    $('#hoja').innerHTML = `<div class="asa"></div><div class="form-op" style="text-align:center"><h2>${primero?'Repetí el PIN':'Elegí un PIN de 4 números'}</h2>
-      <p class="sub">${msj}</p><div class="pin-dots grande ${error?'error':''}">${[0,1,2,3].map(i=>`<i class="${i<pin.length?'on':''}"></i>`).join('')}</div>
-      <div class="teclado claro">${[1,2,3,4,5,6,7,8,9,'',0,'⌫'].map(k=>k===''?'<span></span>':`<button data-k="${k}">${k}</button>`).join('')}</div></div>`; };
-  pintar('Lo vas a pedir para volver a ver la app cuando esté tapada.', false);
-  $('#hoja').classList.add('abierta'); $('#velo').classList.add('abierta');
-  $('#hoja').onclick = e => { const b = e.target.closest('[data-k]'); if(!b) return; const k=b.dataset.k;
-    if(k==='⌫') pin = pin.slice(0,-1); else if(pin.length<4) pin += k;
-    if(pin.length<4) return pintar(primero?'Para confirmar.':'Lo vas a pedir para volver a ver la app cuando esté tapada.', false);
-    if(!primero){ primero = pin; pin=''; return pintar('Para confirmar.', false); }
-    if(pin===primero){ disc.pin = hashPin(pin); guardarDisc(); cerrarFiltros(); if(location.hash==='#/mas') vistaMas(); return; }
-    primero=null; pin=''; pintar('No coincidían. Probá de nuevo.', true); };
-}
 
 /* ===== Cómo llegar: Google Maps, Waze, Uber, Bolt ===== */
 function abrirLlegar(m){
@@ -824,7 +724,7 @@ function abrirLlegar(m){
       <button data-bolt><span class="ll-ico">${ico('i-auto')}</span><div><b>Pedir un Bolt</b><small>Te copiamos la dirección para pegarla en Bolt</small></div></button>
     </div>
     <p class="aviso-precios">${ico('i-escudo')} A Uber y Bolt les pasamos solo la dirección, no el nombre del motel. Igual, la app de viajes va a saber a qué dirección vas.</p></div>`;
-  $('#hoja').classList.add('abierta'); $('#velo').classList.add('abierta');
+  $('#hoja').classList.add('abierta'); $('#hoja').inert=false; setTimeout(()=>$('#hoja').querySelector('a,button')?.focus(),50); $('#velo').classList.add('abierta');
   $('#hoja').onclick = async e => {
     if(e.target.closest('[data-bolt]')){
       let ok = false; try{ await navigator.clipboard.writeText(dir); ok = true; }catch(err){}
@@ -844,7 +744,7 @@ function abrirFiltros(){
     <div class="chips">${[['cerca','Más cerca'],['precio','Más barato']].map(([k,t])=>`<button class="chip ${filtros.orden===k?'on':''}" data-o="${k}">${t}</button>`).join('')}</div>
     <button class="btn-pri" id="aplicar" style="width:100%;justify-content:center;margin-top:22px">Ver moteles</button>
     <button id="limpiar-f" style="width:100%;margin-top:12px;color:var(--texto-2);font-weight:600">Limpiar filtros</button>`;
-  $('#hoja').classList.add('abierta'); $('#velo').classList.add('abierta');
+  $('#hoja').classList.add('abierta'); $('#hoja').inert=false; setTimeout(()=>$('#hoja').querySelector('a,button')?.focus(),50); $('#velo').classList.add('abierta');
   if($('#f-max')) $('#f-max').oninput = e => {filtros.max=+e.target.value; filtros.maxTocado=true; $('#f-max-t').textContent=gs(filtros.max);};
   $('#hoja').onclick = e => {const c=e.target.closest('[data-f]'), o=e.target.closest('[data-o]');
     if(c){filtros.comod.has(c.dataset.f)?filtros.comod.delete(c.dataset.f):filtros.comod.add(c.dataset.f); c.classList.toggle('on');}
@@ -855,7 +755,7 @@ function abrirFiltros(){
 let focoAntes = null;
 new MutationObserver(() => { const h = $('#hoja'); if(h.classList.contains('abierta') && !h.contains(document.activeElement)){ focoAntes = document.activeElement; setTimeout(()=>h.querySelector('button, a, input, textarea')?.focus({preventScroll:true}), 60); } }).observe(document.getElementById('hoja'), {attributes:true, attributeFilter:['class']});
 function cerrarFiltros(){
-  if(focoAntes && document.contains(focoAntes)) setTimeout(()=>focoAntes.focus({preventScroll:true}), 0); $('#hoja').classList.remove('abierta'); $('#velo').classList.remove('abierta'); if($('#tarjetas')) pintarLista(); }
+  if(focoAntes && document.contains(focoAntes)) setTimeout(()=>focoAntes.focus({preventScroll:true}), 0); $('#hoja').classList.remove('abierta'); $('#hoja').inert=true; $('#velo').classList.remove('abierta'); if($('#tarjetas')) pintarLista(); }
 $('#velo').onclick = cerrarFiltros;
 
 /* ===== Eventos globales y rutas ===== */
@@ -868,12 +768,14 @@ document.addEventListener('click', e => { if(e.target.closest('[data-ubicar]')){
 document.addEventListener('mouseover', e => {const c=e.target.closest('.card[data-id]'); if(c) marcar(c.dataset.id,true);});
 document.addEventListener('mouseout', e => {const c=e.target.closest('.card[data-id]'); if(c) marcar(c.dataset.id,false);});
 
+let limpiarVista = null;
 function render(){
+  if(limpiarVista){ try{ limpiarVista(); }catch(e){} limpiarVista = null; }
   const [, ruta, id] = (location.hash.replace(/^#/,'') || '/').split('/');
   const nav = {'':'explorar', motel:'explorar', favoritos:'favoritos', mas:'mas', privacidad:'mas', ayuda:'mas'}[ruta||''] || 'explorar';
   document.querySelectorAll('[data-nav]').forEach(a=>a.classList.toggle('on', a.dataset.nav===nav));
   document.querySelector('.bottom').style.display = ruta==='motel' ? 'none' : '';
-  $('#hoja').classList.remove('abierta'); $('#velo').classList.remove('abierta'); try{ mapa && (mapa.stop(), mapa.remove()); }catch(e){} try{ miniMapa && miniMapa.remove(); }catch(e){} mapa = null; miniMapa = null; capaYo = null; window.scrollTo(0,0); document.querySelector('main').scrollTop = 0;
+  $('#hoja').classList.remove('abierta'); $('#hoja').inert=true; $('#velo').classList.remove('abierta'); try{ mapa && (mapa.stop(), mapa.remove()); }catch(e){} try{ miniMapa && miniMapa.remove(); }catch(e){} mapa = null; miniMapa = null; capaYo = null; window.scrollTo(0,0); document.querySelector('main').scrollTop = 0;
   if(ruta==='motel') vistaMotel(id);
   else if(ruta==='favoritos') vistaFavoritos();
   else if(ruta==='mas') vistaMas();
@@ -882,7 +784,7 @@ function render(){
   else vistaExplorar();
 }
 addEventListener('hashchange', () => { render(); aplicarTema(); });
-aplicarTema(); if(guardado('tapada') || disc.alSalir) tapar(); $('#vista').innerHTML = '<div class="vacio" style="padding-top:30vh">Cargando moteles…</div>';
+aplicarTema(); $('#vista').innerHTML = '<div class="vacio" style="padding-top:30vh">Cargando moteles…</div>';
 cargarDatos().then(() => { render(); aplicarTema(); usarUbicacion(true); });
 </script>
 </body>
