@@ -168,6 +168,13 @@ html.oscuro .leaflet-tile-pane{filter:invert(1) hue-rotate(180deg) saturate(.3) 
 .tab{flex:none;height:38px;padding:0 14px;border-radius:12px;border:1px solid var(--linea);background:var(--superficie);font-weight:600;font-size:13.5px}
 .tab.on{background:var(--texto);color:var(--fondo);border-color:var(--texto)}
 .turnos{background:var(--superficie);border-radius:var(--radio);box-shadow:var(--sombra);overflow:hidden}
+.hab-foto{margin:0 0 12px;border-radius:var(--radio);overflow:hidden;aspect-ratio:16/10;background:#2a1418;box-shadow:var(--sombra)}
+.hab-foto img{width:100%;height:100%;object-fit:cover;display:block}
+.habs{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px;margin-top:14px}
+.hab-card{margin:0;background:var(--superficie);border-radius:var(--radio);overflow:hidden;box-shadow:var(--sombra)}
+.hab-card img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block}
+.hab-card figcaption{padding:10px 12px;display:flex;flex-direction:column;gap:2px}.hab-card small{color:var(--texto-2);font-size:12.5px}
+.foto-credito{font-size:11.5px;color:var(--texto-2);margin-top:6px;opacity:.85}
 .turno{display:flex;align-items:center;justify-content:space-between;padding:15px 16px;border-bottom:1px solid var(--linea)}
 .turno:last-child{border-bottom:0}
 .turno span{display:flex;align-items:center;gap:10px;font-weight:600}
@@ -279,8 +286,6 @@ html.oscuro .ll-ico{color:#F0A9BB}
 .sin-foto img{width:38%;max-width:90px;opacity:.35}
 .sin-foto.grande{aspect-ratio:16/9;max-height:300px}
 .sin-foto.grande img{width:84px}
-.ver-fotos{display:inline-flex;align-items:center;gap:8px;height:42px;padding:0 16px;border-radius:12px;background:#fff;color:#5a1d2d;font-weight:700;font-size:14px;text-decoration:none;box-shadow:0 6px 18px rgba(0,0,0,.25)}
-.ver-fotos svg{width:18px;height:18px}
 .nuevo{font-size:12px;font-weight:700;color:var(--texto-2);background:var(--fondo);border:1px solid var(--linea);padding:2px 8px;border-radius:999px}
 .precio .consultar{font-weight:600;color:var(--burdeos);font-size:13px}
 html.oscuro .precio .consultar{color:#F0A9BB}
@@ -421,6 +426,8 @@ function prepararMotel(m){
   m.wa = m.wa ? String(m.wa).replace(/\D/g,'') || null : null; m.tel = m.tel ? String(m.tel).replace(/[^\d()+ -]/g,'').trim() || null : null;
   m.fotos = (m.fotos||[]).filter(f => /^(https:\/\/|fotos\/)/.test(String(f)) || (window.MC_CONFIG && MC_CONFIG.supabaseUrl && String(f).startsWith(MC_CONFIG.supabaseUrl + '/storage/v1/object/public/fotos/')));
   m.descripcion = String(m.descripcion || '').slice(0, 600);
+  const fh = Object.create(null); Object.entries(m.fotos_hab || {}).forEach(([k,v]) => { if(/^fotos\//.test(String(v))) fh[String(k).slice(0,60)] = String(v); }); m.fotos_hab = fh;
+  m.fotos_fuente = String(m.fotos_fuente || '').slice(0, 60);
   m.lat = +m.lat; m.lng = +m.lng;
   m.zona = m.ciudad; m.dir = m.direccion || 'Dirección por confirmar';
   m.comod = (m.comod||[]).filter(c=>COMOD[c]);
@@ -503,10 +510,7 @@ let favs = new Set(guardado('favs') || []);
 const filtros = {comod:new Set(), max:600000, maxTocado:false, orden:'cerca'};
 
 function foto(n, alt){return `<img src="${esc(n)}" alt="${esc(alt)}" loading="lazy" onerror="this.remove()">`;}
-function sinFoto(m, grande){
-  // Las fotos son de cada motel: no se copian; se enlaza a sus redes hasta que nos las manden (decisión 14/11)
-  const red = m.instagram ? ['Instagram', m.instagram] : m.facebook ? ['Facebook', m.facebook] : null;
-  return `<div class="sin-foto ${grande?'grande':''}"><img src="marca/monograma-blanco.svg" alt="">${grande ? (red ? `<a class="ver-fotos" href="${esc(red[1])}" target="_blank" rel="noopener">${ico('i-foto')}Ver fotos en su ${red[0]}</a>` : '<span>Este motel todavía no subió fotos</span>') : ''}</div>`; }
+function sinFoto(m, grande){ return `<div class="sin-foto ${grande?'grande':''}"><img src="marca/monograma-blanco.svg" alt="">${grande?'<span>Este motel todavía no subió fotos</span>':''}</div>`; }
 function toggleFav(id){ favs.has(id)?favs.delete(id):favs.add(id); guardado('favs',[...favs]);
   if(location.hash.startsWith('#/favoritos')) return render();
   document.querySelectorAll(`[data-fav="${CSS.escape(id)}"]`).forEach(b=>{ b.classList.toggle('on', favs.has(id)); b.setAttribute('aria-pressed', favs.has(id)); }); }
@@ -609,6 +613,7 @@ function vistaMotel(id){
         <h1>${esc(m.nombre)}</h1>
         <div class="meta"><span>${esc(m.zona)}</span></div>
         <div class="meta" style="margin-top:4px">${esc(m.dir)}${ubicado?` · ${m.km.toFixed(1).replace('.',',')} km (${m.min} min)`:''}</div>
+        ${m.fotos.length && m.fotos_fuente && !m.ficha_del_dueno ? `<div class="foto-credito">Fotos: ${esc(m.fotos_fuente)} del motel</div>` : ''}
         ${m.verificado===false ? `<div class="nota sv">${ico('i-ayuda')}<div><b>Sin verificar.</b> Lo encontramos en mapas o directorios, pero no pudimos confirmar que siga abierto${m.aprox?' y la ubicación es aproximada':''}. ¿Lo conocés? <a class="enlace" href="${orbeWaAviso(m)}" target="_blank" rel="noopener">Avisanos por WhatsApp</a>.</div></div>` : ''}
         <div class="acciones tres">
           <a class="acc" href="#" data-llegar>${ico('i-ruta')}Cómo llegar</a>
@@ -618,9 +623,11 @@ function vistaMotel(id){
         ${m.descripcion ? `<div class="bloque"><h2>Sobre el motel</h2><p class="descripcion">${esc(m.descripcion)}</p></div>` : ''}
         <div class="bloque"><h2>Turnos y precios</h2>
           ${m.hab.length ? `<div class="tabs" id="tabs">${m.hab.map((h,i)=>`<button class="tab ${i?'':'on'}" data-hab="${i}">${esc(h.t)}</button>`).join('')}</div>
+          <div class="hab-foto" id="hab-foto"></div>
           <div class="turnos" id="turnos"></div>
           <p class="aviso-precios">${m.precios_origen ? `Precios según ${esc(m.precios_origen)}${m.precios_fecha?` (${fechaCorta(m.precios_fecha)})`:''}. ` : ''}Pueden cambiar: confirmalos con el motel.</p>`
-          : `<div class="nota">${ico('i-reloj')}<div>Este motel todavía no publicó sus precios. ${m.wa||m.tel ? 'Consultalos por WhatsApp o llamando.' : ''}</div></div>`}
+          : `<div class="nota">${ico('i-reloj')}<div>Este motel todavía no publicó sus precios. ${m.wa||m.tel ? 'Consultalos por WhatsApp o llamando.' : ''}</div></div>
+            ${Object.keys(m.fotos_hab).length ? `<div class="habs">${Object.entries(m.fotos_hab).map(([t,f])=>`<figure class="hab-card">${foto(f,t)}<figcaption><b>${esc(t)}</b><small>Consultá el precio</small></figcaption></figure>`).join('')}</div>` : ''}`}
         </div>
         ${m.comod.length ? `<div class="bloque"><h2>Lo que tiene</h2><div class="comod">${m.comod.map(c=>`<div>${ico(COMOD[c][1])}${COMOD[c][0]}</div>`).join('')}</div></div>` : ''}
       </div><aside class="cuerpo lado">
@@ -641,6 +648,7 @@ function vistaMotel(id){
       ${m.wa ? `<a class="btn-pri" href="${waUrl}" target="_blank" rel="noopener">${ico('i-wa')}Consultar</a>` : m.tel ? `<a class="btn-pri" href="tel:${telLink(m.tel)}">${ico('i-tel')}Llamar</a>` : `<span class="btn-pri apagado" aria-disabled="true">Sin contacto</span>`}</div>`;
   const pintarTurnos = () => {
     if(!m.hab.length) return;
+    const fhab = m.fotos_hab[m.hab[hab].t]; $('#hab-foto').innerHTML = fhab ? foto(fhab, m.hab[hab].t) : ''; $('#hab-foto').style.display = fhab ? '' : 'none';
     $('#turnos').innerHTML = m.hab[hab].turnos.map(x=>`<div class="turno"><span>${ico(/pernocte|noche/i.test(x.turno)?'i-luna':'i-reloj')}${esc(x.turno)}</span><b>${gs(x.p)}</b></div>`).join('');
   };
   pintarTurnos();
